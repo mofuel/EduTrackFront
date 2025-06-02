@@ -1,0 +1,122 @@
+/* src/components/Auth.css */
+/* src/components/Auth.css */
+
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap');
+
+/* --- (Eliminar si tenías @font-face para Tuffy, ya no lo necesitamos) --- */
+/* ... (Resto de tus estilos existentes en Auth.css) ... */
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+  font-family: var(--body-font, sans-serif);
+
+  /* --- INICIO CAMBIOS PARA IMAGEN DE FONDO --- */
+  background-image: url('../assets/fondo-auth.jpg'); /* ¡AJUSTA LA RUTA A TU IMAGEN! */
+  background-size: cover; /* Cubre toda el área sin distorsionar la imagen */
+  background-position: center; /* Centra la imagen */
+  background-repeat: no-repeat; /* Evita que la imagen se repita */
+  background-attachment: fixed; /* Mantiene la imagen fija al hacer scroll (opcional) */
+  /* --- FIN CAMBIOS PARA IMAGEN DE FONDO --- */
+
+  /* Puedes mantener un color de fondo como fallback si la imagen no carga */
+  background-color: #3f3f3f;
+}
+
+.auth-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 40px; /* Se ajustará individualmente en Login.css/Register.css */
+  width: 100%;
+  text-align: center;
+  color: var(--white-color, #f0f0f0);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* NO HABRÁ ESTILOS H2 AQUÍ, SE MOVERÁN A Login.css y Register.css */
+
+
+.home-icon-link {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.8rem;
+  transition: color 0.3s ease, transform 0.2s ease;
+  z-index: 10;
+}
+
+.home-icon-link:hover {
+  color: var(--primary-button-color, #007bff);
+  transform: scale(1.1);
+}
+
+.auth-button {
+  width: 100%;
+  padding: 15px 20px;
+  background-color: var(--white-color, #ffffff);
+  color: #333;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+  margin-top: 30px;
+}
+
+.auth-button:hover {
+  background-color: #e0e0e0;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.auth-switch {
+  margin-top: 30px;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.auth-switch a {
+  color: var(--white-color, #f0f0f0);
+  text-decoration: underline;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.auth-switch a:hover {
+  color: var(--primary-button-color, #007bff);
+}
+
+/* MEDIA QUERIES GENERALES (para .auth-card, .home-icon-link) */
+@media (max-width: 600px) {
+  .auth-card {
+    padding: 25px 20px; /* Puedes ajustar esto individualmente en cada CSS si es necesario */
+    margin: 20px;
+    border-radius: 15px;
+  }
+  /* H2 no está aquí, sus estilos se moverán a Login.css y Register.css */
+  .home-icon-link {
+    top: 15px;
+    right: 15px;
+    font-size: 1.5rem;
+  }
+  .auth-button {
+    padding: 12px 15px;
+    font-size: 1rem;
+  }
+  .auth-switch {
+    font-size: 0.8rem;
+    margin-top: 25px;
+  }
+}

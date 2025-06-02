@@ -1,0 +1,137 @@
+/* src/components/Register.css */
+
+/* Importa los estilos base compartidos */
+@import './Auth.css'; 
+
+/* Ancho específico para la tarjeta de Register */
+.auth-card.register-card {
+  max-width: 800px;
+  padding: 30px;
+}
+
+/* Estilos específicos para el título H2 del Register */
+.auth-card.register-card h2 {
+  font-family: 'Pacifico', cursive;
+  font-size: 3.5rem;
+  font-weight: 400;
+  margin-bottom: 30px;
+  color: var(--white-color, #f0f0f0);
+  text-align: center;
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Estilos para las filas de campos en Register */
+.register-form .form-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 15px;
+  gap: 20px;
+}
+
+/* Estilos para los grupos de formulario dentro de las filas */
+.register-form .form-group {
+  flex: 1 1 calc(50% - 10px);
+  min-width: 250px;
+  position: relative;
+  margin-bottom: 0;
+}
+
+.register-form .input-title {
+  display: block;
+  text-align: left;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.95rem;
+}
+
+.register-form .input-with-icon {
+  position: relative;
+  width: 100%;
+}
+
+/* Estilos para todos los inputs (el select ahora se estiliza con la prop 'styles' en JSX) */
+.register-form .form-group input { 
+  width: 100%;
+  padding: 12px 15px;
+  padding-left: 45px; /* Para dejar espacio al icono */
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  background: rgba(5, 18, 78, 0.1);
+  color: var(--white-color, #f0f0f0);
+  font-size: 1rem;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+  font-family: 'Rubik', sans-serif;
+}
+
+/* Estilos del placeholder para inputs */
+.register-form .form-group input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+  opacity: 1;
+}
+
+/* Estilos de foco para inputs */
+.register-form .form-group input:focus { 
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+}
+
+/* Posicionamiento del icono para inputs y para el Select de react-select */
+.register-form .input-icon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.2rem;
+  pointer-events: none; /* Asegura que no bloquee el clic */
+  z-index: 3; /* Para que esté por encima del select */
+}
+
+.register-form .auth-button {
+  margin-top: 25px;
+}
+
+/* Media Queries específicas para Register */
+@media (max-width: 800px) {
+  .auth-card.register-card {
+    max-width: 90%;
+  }
+}
+
+@media (max-width: 600px) {
+  .auth-card.register-card {
+    padding: 25px 20px;
+  }
+  .auth-card.register-card h2 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+  }
+  .register-form .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+  .register-form .form-group {
+    min-width: unset;
+    width: 100%;
+    margin-bottom: 15px;
+  }
+  .register-form .form-group:last-child {
+    margin-bottom: 0;
+  }
+  .register-form .form-group input {
+    padding-left: 40px;
+  }
+  .register-form .form-group .input-icon {
+    left: 12px;
+    font-size: 1.1rem;
+  }
+  .register-form .auth-button {
+    margin-top: 20px;
+  }
+}

@@ -1,0 +1,535 @@
+/* src/components/Login.css */
+
+@import './Auth.css';
+
+/* Ancho específico para la tarjeta de Login */
+.auth-card.login-card {
+  max-width: 500px;
+  padding: 40px;
+}
+
+/* ESTILOS ESPECÍFICOS PARA EL TÍTULO H2 DEL LOGIN */
+.auth-card.login-card h2 {
+  font-family: 'Pacifico', cursive;
+  font-size: 2.5rem;
+  font-weight: 400;
+  margin-bottom: 30px;
+  color: var(--white-color, #f0f0f0);
+  text-align: center;
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Estilos para los grupos de formulario en Login */
+.login-form .form-group {
+  margin-bottom: 20px;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.login-form .form-group .input-icon {
+  position: absolute;
+  left: 15px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.2rem;
+}
+
+.login-form .form-group input {
+  width: 100%;
+  padding: 12px 15px;
+  padding-left: 45px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--white-color, #f0f0f0);
+  font-size: 1rem;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.login-form .form-group input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+  opacity: 1;
+}
+
+.login-form .form-group input:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+}
+
+/* --- ESTILOS PARA LA SECCIÓN DE OPCIONES (Recordarme y Olvidaste) --- */
+.login-options-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* CAMBIO CLAVE AQUÍ: Reducimos el margin-bottom */
+  margin-bottom: 15px; /* De 25px a 15px para reducir el espacio */
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.remember-me-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.remember-me-group input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  margin-right: 10px;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+  position: relative;
+}
+
+.remember-me-group input[type="checkbox"]:checked {
+  background-color: var(--primary-button-color, #007bff);
+  border-color: var(--primary-button-color, #007bff);
+}
+
+.remember-me-group input[type="checkbox"]:checked::before {
+  content: '\2713';
+  display: block;
+  color: white;
+  font-size: 14px;
+  text-align: center;
+  line-height: 18px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.remember-me-group label {
+  color: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  margin-bottom: 0;
+}
+
+.forgot-password-group a {
+  color: rgba(255, 255, 255, 0.9);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.forgot-password-group a:hover {
+  color: var(--primary-button-color, #007bff);
+  text-decoration: underline;
+}
+/* --- FIN ESTILOS PARA LA SECCIÓN DE OPCIONES --- */
+
+/* Estilos para el botón general (compartido) - AJUSTE DEL MARGEN SUPERIOR */
+/* Este selector sobrescribe el margin-top del Auth.css */
+.login-form .auth-button {
+  margin-top: 20px; /* Reducimos el margen superior del botón a 20px (o menos si es necesario) */
+}
+
+/* Media Queries específicas para Login */
+@media (max-width: 600px) {
+  .auth-card.login-card {
+    max-width: 90%;
+    padding: 25px 20px;
+  }
+  .auth-card.login-card h2 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+  }
+  .login-form .form-group input {
+    padding-left: 40px;
+  }
+  .login-form .form-group .input-icon {
+    left: 12px;
+    font-size: 1.1rem;
+  }
+  .login-options-section {
+    font-size: 0.85rem;
+    /* TAMBIÉN AJUSTA EL MARGEN EN MÓVILES SI ES NECESARIO */
+    margin-bottom: 15px; /* Asegura un margen consistente en móviles también */
+  }
+  .remember-me-group input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+  }
+  .remember-me-group input[type="checkbox"]:checked::before {
+    font-size: 12px;
+    line-height: 16px;
+  }
+  /* Asegúrate de que el botón también se ajuste en móviles */
+  .login-form .auth-button {
+    margin-top: 15px; /* Un poco menos de margen en móviles */
+  }
+}
+
+/* --- ESTILOS DEL MODAL (REDESIGNADOS PARA GLASSMORPHISM) --- */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7); /* Fondo oscuro semitransparente, puedes oscurecerlo más si quieres */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px); /* Un blur sutil al fondo */
+  -webkit-backdrop-filter: blur(5px);
+}
+
+.modal-content {
+  /* ¡APLICAMOS GLASSMORPHISM AQUÍ! */
+  background: rgba(255, 255, 255, 0.05); /* Fondo blanco muy transparente, como el auth-card */
+  border-radius: 20px; /* Bordes más redondeados */
+  border: 1px solid rgba(255, 255, 255, 0.1); /* Borde blanco sutil transparente */
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); /* Sombra similar al auth-card */
+  backdrop-filter: blur(10px); /* Un poco más de blur para el propio modal */
+  -webkit-backdrop-filter: blur(10px);
+
+  padding: 40px; /* Aumentamos el padding para más espacio interno */
+  width: 100%;
+  max-width: 480px; /* Ancho ajustado para que se vea más proporcionado */
+  position: relative;
+  text-align: center;
+  color: var(--white-color, #f0f0f0); /* Texto blanco para el Glassmorphism */
+  animation: fadeInScale 0.3s ease-out forwards;
+}
+
+/* Animación de aparición del modal (sin cambios, ya que está bien) */
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.modal-close-button {
+  position: absolute;
+  top: 20px; /* Ajustamos posición */
+  right: 20px; /* Ajustamos posición */
+  background: none;
+  border: none;
+  font-size: 2rem; /* Tamaño del icono X */
+  color: rgba(255, 255, 255, 0.7); /* Color blanco sutil */
+  cursor: pointer;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.modal-close-button:hover {
+  color: var(--primary-button-color, #007bff); /* Azul en hover */
+  transform: scale(1.1);
+}
+
+.modal-content h3 {
+  font-family: 'Pacifico', cursive; /* Misma fuente que los títulos de Login/Register */
+  font-size: 3rem; /* Tamaño del título del modal */
+  font-weight: 400;
+  margin-bottom: 25px; /* Espacio debajo del título */
+  color: var(--white-color, #f0f0f0);
+  text-align: center;
+  text-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+}
+
+.modal-content p { /* Para "Ingresa tu correo electrónico:" */
+  margin-bottom: 20px; /* Espacio antes del input */
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.8); /* Color blanco sutil */
+}
+
+/* Estilo para los inputs del modal (similar a los inputs del login) */
+.modal-content .form-group {
+  margin-bottom: 25px; /* Espacio debajo del input */
+  /* Removemos el display: flex y align-items: center ya que no hay icono dentro */
+}
+
+.modal-content .form-group input { /* General para todos los inputs del modal */
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1); /* Fondo transparente para Glassmorphism */
+  color: var(--white-color, #f0f0f0);
+  font-size: 1rem;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.modal-content .form-group input::placeholder {
+  color: rgba(255, 255, 255, 0.6); /* Color del placeholder */
+  opacity: 1;
+}
+
+.modal-content .form-group input:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+}
+
+.modal-button {
+  width: 100%;
+  padding: 15px 20px;
+  background-color: var(--white-color, #ffffff); /* Botón BLANCO como el de Login */
+  color: #333; /* Texto oscuro para el botón blanco */
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+  margin-top: 15px; /* Margen superior para separar del input */
+}
+
+.modal-button:hover {
+  background-color: #e0e0e0;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* --- ESTILOS ESPECÍFICOS PARA EL MODAL DE TOKEN --- */
+.validate-token-form h3 {
+  margin-bottom: 25px; /* Más espacio para el título del token */
+}
+
+.token-input-group {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 25px;
+  gap: 15px; /* Más espacio entre los campos de token */
+  color: var(--white-color, #f0f0f0); /* Color del texto "Letra:" y "-" */
+  font-size: 1rem; /* Tamaño de la fuente para "Letra:" */
+  font-weight: 500;
+}
+
+.token-letter {
+  display: flex; /* Para alinear el texto "Letra:" y el input */
+  align-items: center;
+  gap: 8px; /* Espacio entre "Letra:" y el input */
+}
+
+.token-letter input,
+.token-number input {
+  padding: 12px 10px; /* Padding ajustado */
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1); /* Fondo Glassmorphism */
+  color: var(--white-color, #f0f0f0);
+  font-size: 1.5rem; /* Tamaño de la fuente para el token */
+  font-weight: bold;
+  text-align: center;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.token-letter input {
+  width: 60px; /* Ancho para la letra */
+  text-transform: uppercase;
+}
+
+.token-number input {
+  width: 120px; /* Ancho para los números */
+}
+
+.token-separator {
+  font-size: 2rem;
+  color: rgba(255, 255, 255, 0.7); /* Color del separador '-' */
+  font-weight: normal; /* No tan negrita */
+}
+/* --- ESTILOS DEL MODAL (CON FUENTE RUBIK) --- */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+.modal-content {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 40px;
+  width: 100%;
+  max-width: 480px;
+  position: relative;
+  text-align: center;
+  color: var(--white-color, #f0f0f0);
+  animation: fadeInScale 0.3s ease-out forwards;
+}
+
+@keyframes fadeInScale {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.modal-close-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.modal-close-button:hover {
+  color: var(--primary-button-color, #007bff);
+  transform: scale(1.1);
+}
+
+.modal-content h3 {
+  /* USAR RUBIK PARA EL TÍTULO DEL MODAL */
+  font-family: 'Rubik', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: var(--white-color, #f0f0f0);
+  text-align: center;
+  text-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+}
+
+.modal-content p {
+  /* USAR RUBIK PARA EL TEXTO DE INSTRUCCIÓN DEL MODAL */
+  font-family: 'Rubik', sans-serif;
+  margin-bottom: 20px;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.modal-content .form-group input {
+  /* USAR RUBIK PARA LOS INPUTS DEL MODAL */
+  font-family: 'Rubik', sans-serif;
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--white-color, #f0f0f0);
+  font-size: 1rem;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.modal-content .form-group input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+  opacity: 1;
+}
+
+.modal-content .form-group input:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+}
+
+.modal-button {
+  width: 100%;
+  padding: 15px 20px;
+  background-color: var(--white-color, #ffffff);
+  color: #333;
+  border: none;
+  
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+  margin-top: 15px;
+}
+
+.modal-button:hover {
+  background-color: #e0e0e0;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* --- ESTILOS ESPECÍFICOS PARA EL MODAL DE TOKEN (CON FUENTE RUBIK) --- */
+.validate-token-form h3 {
+  margin-bottom: 25px;
+}
+
+.token-input-group {
+  /* USAR RUBIK PARA EL TEXTO DEL GRUPO DE TOKEN (ej. "Letra:") */
+  font-family: 'Rubik', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 25px;
+  gap: 15px;
+  color: var(--white-color, #f0f0f0);
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.token-letter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.token-letter input,
+.token-number input {
+  /* USAR RUBIK PARA LOS INPUTS DE TOKEN */
+  font-family: 'Rubik', sans-serif;
+  padding: 12px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--white-color, #f0f0f0);
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.token-letter input {
+  width: 60px;
+  text-transform: uppercase;
+}
+
+.token-number input {
+  width: 120px;
+}
+
+.token-separator {
+  font-size: 2rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: normal;
+}
+
+/* Media Queries para modales en móviles */
+@media (max-width: 600px) {
+  /* ... (Mantén los ajustes de media query para los modales) ... */
+  .auth-card.login-card h2 { /* Ajuste el tamaño del título para móviles */
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+  }
+}

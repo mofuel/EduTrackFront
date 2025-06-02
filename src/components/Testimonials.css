@@ -1,0 +1,312 @@
+/* src/components/Testimonials.css */
+
+/* --- KEYFRAMES DE ANIMACIÓN (Existentes y Nuevos) --- */
+
+/* Animación para el cambio de slide (esta ya la tenías) */
+@keyframes slide {
+    0% {
+        opacity: 0;
+        transform: translateX(-15px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0px);
+    }
+}
+
+/* NUEVOS KEYFRAMES PARA LA ANIMACIÓN DE ENTRADA */
+/* Animación para la sección principal */
+@keyframes fadeInSlideUp {
+    0% {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Animación para el título */
+@keyframes fadeInTitle {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Animación para las imágenes indicadoras (pop-in) */
+@keyframes scaleInPop {
+    0% {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Animación para el wrapper del slider (ligeramente más grande y desvaneciéndose) */
+@keyframes fadeInScale {
+    0% {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* ========================================================= */
+/* --- ESTILOS GENERALES DE LA SECCIÓN --- */
+
+.edutrack-testimonials-section {
+    min-height: auto;
+    width: 100%;
+    padding: 60px 15px;
+    font-family: var(--body-font);
+    color: var(--white-color);
+    padding-bottom: 85px !important;
+    /* ESTILOS INICIALES PARA LA ANIMACIÓN DE ENTRADA */
+    opacity: 0;
+    transform: translateY(50px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+/* CLASE QUE ACTIVA LA ANIMACIÓN */
+.edutrack-testimonials-section.in-view {
+    animation: fadeInSlideUp 0.8s ease-out forwards;
+}
+
+
+.edutrack-testimonials-container {
+    max-width: 1170px;
+    margin: auto;
+}
+
+/* ========================================================= */
+/* --- TÍTULO DE LA SECCIÓN --- */
+
+.edutrack-testimonials-title-wrapper {
+    margin-bottom: 60px;
+
+    /* ESTILOS INICIALES PARA LA ANIMACIÓN DE ENTRADA */
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+/* CLASE QUE ACTIVA LA ANIMACIÓN */
+.edutrack-testimonials-title-wrapper.in-view {
+    animation: fadeInTitle 0.6s ease-out forwards;
+}
+
+.edutrack-testimonials-heading {
+    font-family: 'Dancing Script', cursive;
+    text-align: center;
+    color: white;
+    font-size: 5rem;
+    margin: 0;
+    position: relative;
+}
+
+.edutrack-testimonials-heading::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: -15px;
+    width: 100px;
+    height: 4px;
+    background-color: var(--primary-button-color);
+    border-radius: 2px;
+}
+
+/* ========================================================= */
+/* --- INDICADOR DEL SLIDER (IMÁGENES PEQUEÑAS) --- */
+
+.edutrack-slider-indicator {
+    text-align: center;
+    padding-bottom: 30px;
+    margin-top: 40px;
+}
+
+.edutrack-indicator-image {
+    max-height: 80px !important;
+    max-width: 80px !important;
+    border-radius: 50% 0% 50% 0%;
+    display: inline-block !important;
+    margin: 0 8px;
+    opacity: 0.2 !important; /* Menos opacidad cuando no está activa (estado por defecto para no activo) */
+    border: 4px solid var(--white-color);
+    cursor: pointer !important;
+    transition: opacity 0.5s ease, border-color 0.5s ease, transform 0.3s ease !important;
+
+    /* ESTILOS INICIALES PARA LA ANIMACIÓN DE ENTRADA */
+    /* Ahora estas propiedades definirán el estado inicial antes de la animación */
+    opacity: 0;
+    transform: scale(0.8) !important;
+}
+
+/* CLASE QUE ACTIVA LA ANIMACIÓN */
+.edutrack-indicator-image.in-view {
+    animation: scaleInPop 0.6s ease-out forwards; /* Se aplicará sin delay individual */
+}
+
+.edutrack-indicator-image.active {
+    opacity: 1 !important; /* Opacidad completa cuando está activa */
+    border-color: var(--first-color-light);
+    transform: scale(1.05) !important;
+}
+
+.edutrack-indicator-image:hover {
+    opacity: 0.7;
+    border-color: var(--primary-button-color);
+    transform: scale(1.02);
+}
+
+/* ========================================================= */
+/* --- SLIDER DE TESTIMONIOS (CAJA GRANDE) --- */
+
+.edutrack-slider-wrapper {
+    border: 1px solid var(--border-color);
+    max-width: 700px;
+    margin: auto;
+    text-align: center;
+    padding: 40px;
+    background-color: var(--card-bg-color);
+    border-radius: 50px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    position: relative;
+
+    /* ESTILOS INICIALES PARA LA ANIMACIÓN DE ENTRADA */
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+/* CLASE QUE ACTIVA LA ANIMACIÓN */
+.edutrack-slider-wrapper.in-view {
+    animation: fadeInScale 0.8s ease-out forwards;
+}
+
+.edutrack-slide {
+    display: none;
+}
+
+.edutrack-slide.active {
+    display: block;
+    animation: slide 0.8s ease-out forwards;
+}
+
+.edutrack-testimonial-text {
+    font-size: 1.15rem;
+    color: var(--white-color);
+    word-spacing: 1px;
+    line-height: 1.8;
+    margin-bottom: 30px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.edutrack-client-info {
+    margin-top: 20px;
+}
+
+.edutrack-client-name {
+    font-weight: bold;
+    color: var(--first-color-light);
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+}
+
+.edutrack-client-title {
+    display: block;
+    font-size: 1rem;
+    color: var(--text-color-soft);
+}
+
+/* ========================================================= */
+/* --- MEDIA QUERIES --- */
+
+@media (max-width: 991px) {
+    .edutrack-testimonials-heading {
+        font-size: 3rem;
+    }
+    .edutrack-slider-wrapper {
+        padding: 30px;
+        max-width: 600px;
+    }
+    .edutrack-testimonial-text {
+        font-size: 1.05rem;
+    }
+    .edutrack-client-name {
+        font-size: 1.3rem;
+    }
+}
+
+@media (max-width: 767px) {
+    .edutrack-testimonials-section {
+        padding: 80px 10px 40px;
+    }
+    .edutrack-testimonials-heading {
+        font-size: 2.5rem;
+        margin-bottom: 40px;
+    }
+    .edutrack-indicator-image {
+        max-height: 70px;
+        max-width: 70px;
+    }
+    .edutrack-slider-wrapper {
+        padding: 25px;
+        border-radius: 30px;
+    }
+    .edutrack-testimonial-text {
+        font-size: 1rem;
+    }
+    .edutrack-client-name {
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 575px) {
+    .edutrack-testimonials-section {
+        padding: 60px 5px 30px;
+    }
+    .edutrack-testimonials-heading {
+        font-size: 2rem;
+    }
+    .edutrack-testimonials-heading::after {
+        width: 80px;
+        bottom: -10px;
+    }
+    .edutrack-slider-indicator {
+        padding-bottom: 20px;
+    }
+    .edutrack-indicator-image {
+        max-height: 60px;
+        max-width: 60px;
+        margin: 0 5px;
+    }
+    .edutrack-slider-wrapper {
+        padding: 20px;
+        border-radius: 20px;
+        max-width: 100%;
+    }
+    .edutrack-testimonial-text {
+        font-size: 0.95rem;
+    }
+    .edutrack-client-name {
+        font-size: 1.1rem;
+    }
+    .edutrack-client-title {
+        font-size: 0.9rem;
+    }
+}

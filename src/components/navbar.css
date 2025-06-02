@@ -1,0 +1,195 @@
+/* src/components/Navbar.css */
+
+.custom-navbar {
+    padding: 2rem 1rem;
+    z-index: 1000;
+    /* INICIO DE MODIFICACIONES IMPORTANTES para Opción 2 */
+    /* Para que el Navbar flote y se mueva con el scroll, pero empiece más abajo */
+    position: absolute; /* MODIFICADO: Cambiado a 'absolute' */
+    left: 0;   /* Asegura que esté alineado a la izquierda */
+    width: 100%;
+
+    /* Se cambia a 'visible' para asegurar que el menú desplegable no se recorte */
+    overflow: visible; /* Mantenido */
+    /* Se define el fondo del Navbar como transparente por defecto */
+    background-color: transparent !important; /* Mantenido */
+    /* FIN DE MODIFICACIONES IMPORTANTES para Opción 2 */
+}
+
+/* Pseudo-elemento para el fondo del gradiente */
+.custom-navbar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, #1d2e5f, #1a3674, #010f2e);
+    opacity: 0;
+    transition: opacity 0.4s ease-in-out;
+    z-index: -1;
+}
+
+/* Clase que se aplica al .custom-navbar cuando se hace scroll, haciendo visible el fondo */
+/* ELIMINADO: Esta regla ya NO hará que el fondo aparezca al hacer scroll (como lo pediste) */
+/* .custom-navbar.scrolled::before {
+    opacity: 1;
+} */
+
+
+/* INICIO DE LA SOLUCIÓN DEFINITIVA PARA EL DESPLIEGUE EN RESPONSIVE */
+/* NUEVA REGLA: El fondo del Navbar principal se hace visible cuando su menú desplegable está activo. */
+@media (max-width: 991.98px) {
+    .custom-navbar:has(.navbar-collapse.show)::before {
+        opacity: 1;
+    }
+}
+/* FIN DE LA SOLUCIÓN DEFINITIVA PARA EL DESPLIEGUE EN RESPONSIVE */
+
+
+/* ASEGURARSE QUE EL CONTENIDO DEL NAVBAR ESTÉ SIEMPRE ENCIMA DEL FONDO */
+.navbar-brand,
+.navbar-nav .nav-link,
+.custom-btn-login,
+.custom-btn-register {
+    position: relative;
+    z-index: 1;
+}
+
+/* Estilos del logo y el texto de la marca */
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: white;
+    display: flex;
+    align-items: center;
+}
+
+.logo-img {
+    height: 40px;
+    width: auto;
+}
+
+/* Estilos de los enlaces de navegación */
+.navbar-nav .nav-link {
+    color: #ffffffa8;
+    margin-right: 1rem;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+/* Animación de subrayado para los enlaces */
+.navbar-nav .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0px;
+    left: 50%;
+    transform: translateX(-50%) scaleX(0);
+    transform-origin: center;
+    width: 60%;
+    height: 2px;
+    background-color: #fff;
+    transition: transform 0.3s ease-in-out !important;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #ffffff;
+}
+
+.navbar-nav .nav-link:hover::after {
+    transform: translateX(-50%) scaleX(1);
+}
+
+/* Estilos del botón de "Iniciar sesión" */
+.custom-btn-login {
+    color: white;
+    background-color: transparent !important;
+    border: 1.8px solid white !important;
+    font-weight: bold;
+    padding: 0.5rem 1.3rem;
+    border-radius: 30px;
+    overflow: hidden;
+    transition: color 0.5s ease-in-out !important;
+    font-weight: bold !important;
+}
+
+/* Animación de hover para el botón de "Iniciar sesión" (relleno de blanco) */
+.custom-btn-login::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 0%;
+    background-color: white;
+    z-index: -1;
+    transition: width 0.4s ease-in-out;
+}
+
+.custom-btn-login:hover::before {
+    width: 100%;
+}
+
+.custom-btn-login:hover {
+    font-weight: bold;
+    color: #041946 !important;
+}
+
+/* Estilos del botón de "Registrarse" */
+.custom-btn-register {
+    background-color: white !important;
+    color: #1a3674 !important;
+    border: 0px solid white !important;
+    font-weight: bold;
+    padding: 0.5rem 1.3rem;
+    border: 1px solid transparent !important;
+    border-radius: 30px;
+    transition: all 0.4s ease-in-out !important ;
+    font-weight: bold !important;
+}
+
+/* Animación de hover para el botón de "Registrarse" */
+.custom-btn-register:hover {
+    background-color: #011849 !important;
+    color: white !important;
+    border: 1px solid white !important;
+    box-shadow: 0 0 7px 3px rgba(255, 255, 255, 0.897);
+}
+
+/* Media queries para dispositivos más pequeños */
+@media (max-width: 991.98px) {
+    .custom-btn-login,
+    .custom-btn-register {
+        width: 100%;
+        text-align: center;
+    }
+
+    .custom-btn-register {
+        margin-top: 0.5rem;
+    }
+
+    .navbar-collapse {
+        background-color: transparent !important;
+        box-shadow: none;
+        z-index: 999;
+        padding: 1rem;
+
+        & > * { /* Si usas SASS/SCSS */
+            background-color: transparent !important;
+        }
+    }
+
+    .navbar-collapse.collapsing,
+    .navbar-collapse.show {
+        background-color: transparent !important;
+    }
+
+    .navbar-expand-lg.navbar-collapse.show {
+        background-color: transparent !important;
+    }
+
+    .navbar-toggler {
+        z-index: 1001;
+        position: relative;
+    }
+}

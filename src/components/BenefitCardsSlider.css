@@ -1,0 +1,312 @@
+/* ========================================================= */
+/* --- Configuración Global de Box-Sizing --- */
+html {
+  box-sizing: border-box;
+}
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+/* --- Ocultar Barra de Scroll Horizontal Global --- */
+body {
+    overflow-x: hidden;
+}
+
+
+.new-card-slider-section {
+    padding-bottom: 40px !important;
+    background-color: var(--bg-color);
+    text-align: center;
+    font-family: var(--body-font);
+    color: var(--text-color);
+    position: relative !important;
+    z-index: 2 !important;
+    overflow-x: hidden !important;
+    overflow-y: visible !important;
+}
+
+/* ========================================================= */
+/* --- KEYFRAMES DE ANIMACIÓN (MODIFICADO) --- */
+
+/* Animación de entrada para el NUEVO WRAPPER de las tarjetas (aparecer y subir ligeramente) */
+@keyframes cardFadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(100px); /* Empieza más abajo, para subir */
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0); /* Termina en su posición normal */
+  }
+}
+
+/* Animación para el encabezado (título y subtítulo juntos) */
+@keyframes headerFadeInFromTop {
+    0% {
+        opacity: 0;
+        transform: translateY(-50px); /* Empieza 50px arriba */
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0); /* Termina en su posición original */
+    }
+}
+
+
+/* Contenedor para el título y subtítulo para animar juntos */
+.slider-header-animated {
+    /* Estado inicial: oculto y ligeramente desplazado */
+    opacity: 0;
+    transform: translateY(-50px);
+}
+
+/* Aplicar animación cuando la sección principal está en vista */
+.new-card-slider-section.in-view .slider-header-animated {
+    animation: headerFadeInFromTop 1s ease-out forwards; /* Animación para el grupo */
+    animation-delay: 0.1s; /* Retraso para que el grupo aparezca */
+}
+
+
+/* Títulos de la sección del slider (mantienen sus estilos, pero la animación la controla el padre) */
+.main-slider-title {
+    margin-top: 70px;
+    font-size: 3.5rem;
+    color: var(--text-color);
+    font-family: 'Dancing Script', cursive;
+    font-weight: 700;
+    margin-bottom: 10px;
+    line-height: 1.2;
+    padding-top: 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Subtítulo de la sección del slider (mantienen sus estilos) */
+.main-slider-subtitle {
+    font-family: var(--body-font);
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: var(--text-color);
+    margin-bottom: 10px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+/* ========================================================= */
+/* --- ESTILOS DE SWIPER (Contenedor principal del Slider) --- */
+.new-card-swiper {
+    width: 100%;
+    padding-block: 50px !important;
+    position: relative !important;
+    z-index: 3;
+    overflow: visible;
+}
+
+/* Estilo base para CADA slide individual de Swiper (cuando no están activas/centradas) */
+.new-card-slide {
+    height: auto;
+    opacity: 0.5;
+    transform: scale(0.85);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    overflow: visible;
+    position: relative;
+    z-index: 1;
+}
+
+/* Estilo para la slide ACTUALMENTE ACTIVA (la del centro, la que debe resaltar) */
+.new-card-slide.swiper-slide-active {
+    opacity: 1;
+    transform: scale(1);
+    z-index: 2;
+    overflow: visible;
+}
+
+/* Opcional: Estilo para las slides ADYACENTES a la activa (las que están justo antes y después) */
+.new-card-slide.swiper-slide-next,
+.new-card-slide.swiper-slide-prev {
+    opacity: 0.75;
+    transform: scale(0.92);
+    overflow: visible;
+}
+
+/* ========================================================= */
+/* --- ESTILOS DEL NUEVO WRAPPER DE ANIMACIÓN (animated-card-wrapper) --- */
+.animated-card-wrapper {
+    /* Estado inicial para la animación de entrada: invisible y más abajo */
+    opacity: 0;
+    transform: translateY(100px); /* ¡Ajustado para que empiece más abajo! */
+    /* No hay transition aquí, solo animación */
+    height: 100%; /* Asegura que el wrapper tenga la altura de la tarjeta */
+    display: flex; /* Para que la tarjeta interior ocupe todo el espacio */
+    justify-content: center;
+    align-items: center;
+}
+
+/* Aplicar la animación de entrada al wrapper cuando la sección está en vista */
+.new-card-slider-section.in-view .new-card-slide .animated-card-wrapper {
+    animation: cardFadeInUp 0.7s ease-out forwards; /* La animación de entrada de la tarjeta */
+    /* Los delays se mantienen para que aparezcan escalonadamente */
+}
+
+/* Control del retraso de las tarjetas individualmente a través del wrapper */
+.new-card-slider-section.in-view .new-card-slide:nth-child(1) .animated-card-wrapper { animation-delay: 0.7s; }
+.new-card-slider-section.in-view .new-card-slide:nth-child(2) .animated-card-wrapper { animation-delay: 0.6s; }
+.new-card-slider-section.in-view .new-card-slide:nth-child(3) .animated-card-wrapper { animation-delay: 0.6s; }
+.new-card-slider-section.in-view .new-card-slide:nth-child(4) .animated-card-wrapper { animation-delay: 0.4s; }
+.new-card-slider-section.in-view .new-card-slide:nth-child(5) .animated-card-wrapper { animation-delay: 0.6s; }
+.new-card-slider-section.in-view .new-card-slide:nth-child(6) .animated-card-wrapper { animation-delay: 0.7s; }
+
+
+/* ========================================================= */
+/* --- ESTILOS DE CADA TARJETA INDIVIDUAL (Card Content) --- */
+/* ¡ESTE ES EL ELEMENTO QUE TENDRÁ EL HOVER! */
+.new-card-content {
+    background-color: rgb(157, 169, 224);
+    border-radius: 20px;
+    padding: 30px;
+    text-align: center;
+    height: 100%; /* Asegura que la tarjeta ocupe el 100% de su wrapper */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    /* ¡LA CLAVE DE LA SUAVEZ Y EL LEVANTAMIENTO GARANTIZADO! */
+    /* Aplica transición a las propiedades que cambien en el hover */
+    transition: transform 0.3s ease-out, box-shadow 0.3s ease; /* Duración y función de suavidad */
+    min-height: 400px;
+    max-width: 100%;
+    margin: 0 auto;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 1; /* Mantener z-index base */
+    /* ¡Aquí NO hay opacity ni transform iniciales de animación! */
+}
+
+/* Estilos de la tarjeta al pasar el ratón por encima (hover) */
+/* ¡IMPORTANTE! SIN !IMPORTANT EN EL TRANSFORM aquí para que la 'transition' haga su trabajo. */
+.new-card-content:hover {
+    box-shadow:
+        0 15px 30px rgba(255, 255, 255, 0.3),
+        0 0 50px rgba(59, 134, 255, 0.7);
+    transform: translateY(-12px); /* Ya NO necesita !important */
+    z-index: 10; /* Aseguramos que la tarjeta en hover esté por encima */
+}
+
+/* Estilos del ícono dentro de la tarjeta */
+.new-card-icon {
+    font-size: 8rem;
+    color: rgb(255, 255, 255);
+    margin-bottom: 25px;
+}
+
+/* Estilos del título de la tarjeta */
+.new-card-name {
+    font-size: var(--h2-font-size);
+    color: rgb(8, 16, 63);
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+/* Estilos de la descripción de la tarjeta */
+.new-card-description {
+    font-size: var(--normal-font-size);
+    color: rgb(8, 16, 63);
+    line-height: 1.5;
+    margin-bottom: 25px;
+    flex-grow: 1;
+}
+
+/* Estilos del botón dentro de la tarjeta */
+.new-card-button {
+    display: inline-block;
+    background-color: rgb(8, 16, 63);
+    color: hwb(46 4% 0%);
+    padding: 12px 30px;
+    border: 2px solid  hwb(46 4% 0%) !important;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-weight: bold !important;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+/* Estilos del botón al pasar el ratón por encima */
+.new-card-button:hover {
+    background-color: rgb(201, 211, 255);
+    color: #000000;
+    border: 2px solid rgb(6, 22, 73) !important;
+    font-weight: bold !important;
+    transition: all 0.5s ease;
+}
+
+/* ========================================================= */
+/* --- ESTILOS DE PAGINACIÓN DE SWIPER (los puntos de navegación inferiores) --- */
+
+/* Ocultar la paginación si no la quieres visible */
+.swiper-pagination {
+    opacity: 0; /* Lo hace invisible */
+    pointer-events: none; /* No permite interacciones con el ratón */
+    position: relative; /* Permite posicionar el elemento en el flujo normal, pero con z-index */
+    display: flex;
+    justify-content: center;
+    margin-top: 30px; /* Espacio entre el slider y los puntos de paginación */
+    z-index: 10;
+}
+
+/* Estilos de cada punto (bullet) de paginación */
+.swiper-pagination-bullet {
+    background-color: var(--text-color);
+    opacity: 0.3 !important;
+    width: 10px !important;
+    height: 10px !important;
+    margin: 0 6px !important;
+    transition: opacity 0.3s ease, background-color 0.3s ease;
+}
+
+/* Estilos del punto de paginación activo */
+.swiper-pagination-bullet-active {
+    background-color: var(--primary-button-color) !important;
+    opacity: 1 !important;
+}
+
+/* ========================================================= */
+/* --- Media Queries (Adaptación a Diferentes Tamaños de Pantalla) --- */
+
+@media screen and (max-width: 768px) {
+    .main-slider-title { font-size: 2.5rem; }
+    .main-slider-subtitle { font-size: 1.2rem; margin-bottom: 30px; }
+    .new-card-content {
+        padding: 20px;
+        min-height: 350px;
+        max-width: 90%;
+    }
+    .new-card-icon { font-size: 6rem; margin-bottom: 20px; }
+    .new-card-name { font-size: 1.25rem; }
+    .new-card-description { font-size: 0.9rem; }
+    .new-card-button { padding: 10px 20px; font-size: 0.9rem; }
+}
+
+@media screen and (min-width: 769px) and (max-width: 1023px) {
+    .main-slider-title { font-size: 3rem; }
+    .main-slider-subtitle { font-size: 1.3rem; }
+    .new-card-content {
+        max-width: 350px;
+    }
+    .new-card-icon { font-size: 7rem; }
+}
+
+@media screen and (min-width: 1024px) {
+    .main-slider-title { font-size: 3.5rem; }
+    .main-slider-subtitle { font-size: 1.5rem; }
+    .new-card-icon { font-size: 8rem; }
+    .new-card-content {
+        max-width: 400px;
+    }
+}

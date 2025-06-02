@@ -1,0 +1,250 @@
+/* src/components/Footer.css */
+
+/* --- KEYFRAMES DE ANIMACIÓN --- */
+
+@keyframes fadeInSlideUp {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ========================================================= */
+/* --- ESTILOS GENERALES DEL FOOTER --- */
+
+.footer-section {
+    background-color:  #101444; /* Un fondo oscuro para el footer */
+    color: var(--white-color); /* Texto claro en el fondo oscuro */
+    padding: 60px 0 20px; /* Espaciado superior, inferior, y para el copyright */
+    font-family: var(--body-font);
+    overflow: hidden; /* Para asegurar que las animaciones de slide no muestren scrollbars */
+    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.2); /* Sombra sutil en la parte superior */
+}
+
+.footer-container {
+    display: flex;
+    flex-wrap: wrap; /* Permite que las columnas se envuelvan en pantallas pequeñas */
+    justify-content: space-between;
+    gap: 30px; /* Espacio entre columnas */
+    max-width: 1200px; /* Ancho máximo consistente */
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.footer-column {
+    flex: 1; /* Distribuye el espacio equitativamente */
+    min-width: 250px; /* Ancho mínimo para cada columna antes de envolver */
+    padding: 10px; /* Espaciado interno para las columnas */
+
+    /* Estado inicial para animación: oculto y ligeramente desplazado */
+    opacity: 0;
+    transform: translateY(30px);
+    transition: none; /* Asegura que no haya transición por defecto que interfiera con la animación */
+}
+
+/* Aplicar animaciones cuando el footer está en vista */
+.footer-section.in-view .company-info-animated {
+    animation: fadeInSlideUp 0.8s ease-out forwards;
+    animation-delay: 0.2s; /* Retraso para la primera columna */
+}
+
+.footer-section.in-view .quick-links-animated {
+    animation: fadeInSlideUp 0.8s ease-out forwards;
+    animation-delay: 0.4s; /* Retraso para la segunda columna */
+}
+
+.footer-section.in-view .contact-info-animated {
+    animation: fadeInSlideUp 0.8s ease-out forwards;
+    animation-delay: 0.6s; /* Retraso para la tercera columna */
+}
+
+
+/* ========================================================= */
+/* --- ESTILOS DE CADA SECCIÓN DENTRO DEL FOOTER --- */
+
+/* Título de la marca */
+.footer-brand {
+    font-family: 'Dancing Script', cursive; /* Consistente con tus títulos */
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: white; /* Un color llamativo para el nombre */
+    margin-bottom: 15px;
+}
+
+.footer-description {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    color: rgba(255, 255, 255, 0.8); /* Texto ligeramente más claro */
+}
+
+/* Iconos de redes sociales */
+.social-icons {
+    display: flex;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.social-icon {
+    font-size: 1.8rem;
+    color: var(--white-color); /* Color de los iconos */
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.social-icon:hover {
+    color: var(--first-color-alt); /* Color al pasar el mouse */
+    transform: translateY(-3px); /* Pequeño efecto de elevación */
+}
+
+/* Encabezados de columna */
+.footer-heading {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color:rgb(169, 163, 255) ; /* Color llamativo para los títulos de columna */
+    margin-bottom: 20px;
+    position: relative; /* Para la línea decorativa */
+}
+
+/* Línea decorativa bajo los encabezados */
+.footer-heading::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -8px;
+    width: 50px;
+    height: 3px;
+    background-color: rgb(169, 163, 255);
+    border-radius: 2px;
+}
+
+
+/* Enlaces de pie de página */
+.footer-links li {
+    margin-bottom: 10px;
+}
+
+.footer-link {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: color 0.3s ease, padding-left 0.3s ease;
+    display: inline-block; /* Para que padding-left funcione */
+}
+
+.footer-link:hover {
+    color: var(--first-color-light); /* Color al pasar el mouse */
+    padding-left: 5px; /* Efecto de "empuje" al pasar el mouse */
+}
+
+/* Detalles de contacto */
+.contact-details li {
+    display: flex;
+    align-items: flex-start; /* Alinea los iconos con el texto en la parte superior */
+    margin-bottom: 15px;
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.contact-icon {
+    font-size: 1.2rem;
+    color: white; /* Color del icono de contacto */
+    margin-right: 10px;
+    flex-shrink: 0; /* Evita que el icono se encoja */
+    margin-top: 2px; /* Ajuste fino vertical */
+}
+
+/* ========================================================= */
+/* --- BARRA INFERIOR DE DERECHOS DE AUTOR --- */
+
+.footer-bottom-bar {
+    border-top: 1px solid rgba(255, 255, 255, 0.1); /* Separador sutil */
+    text-align: center;
+    padding-top: 20px;
+    margin-top: 40px; /* Espacio antes del copyright */
+}
+
+.footer-copyright {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.6); /* Texto de copyright más suave */
+}
+
+
+/* ========================================================= */
+/* --- MEDIA QUERIES PARA RESPONSIVIDAD --- */
+
+@media (max-width: 991px) {
+    .footer-container {
+        flex-direction: column; /* Apila las columnas en pantallas más pequeñas */
+        align-items: center; /* Centra las columnas apiladas */
+        gap: 50px; /* Más espacio entre secciones apiladas */
+    }
+
+    .footer-column {
+        min-width: unset; /* Elimina el min-width para flexibilidad */
+        width: 80%; /* Ocupa la mayor parte del ancho disponible */
+        text-align: center;
+    }
+
+    .footer-heading::after {
+        left: 50%; /* Centra la línea */
+        transform: translateX(-50%);
+    }
+
+    .social-icons {
+        justify-content: center; /* Centra los iconos sociales */
+    }
+
+    .footer-links, .contact-details {
+        text-align: center;
+        padding-left: 0; /* Elimina padding si no hay iconos */
+    }
+
+    .contact-details li {
+        justify-content: center; /* Centra los elementos de contacto */
+        align-items: center;
+    }
+
+    .contact-icon {
+        margin-right: 8px;
+    }
+}
+
+@media (max-width: 575px) {
+    .footer-section {
+        padding: 40px 0 15px;
+    }
+    .footer-brand {
+        font-size: 2rem;
+    }
+    .footer-column {
+        width: 95%; /* Más ancho en móviles pequeños */
+    }
+    .footer-heading {
+        font-size: 1.1rem;
+    }
+    .footer-links li, .contact-details li {
+        font-size: 0.9rem;
+    }
+    .social-icon {
+        font-size: 1.5rem;
+    }
+    .footer-copyright {
+        font-size: 0.75rem;
+    }
+}
+
+.footer-bottom-bar {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+    padding-top: 20px;
+    margin-top: 40px;
+}
+
+.footer-copyright {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.6);
+}

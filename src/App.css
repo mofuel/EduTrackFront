@@ -1,0 +1,84 @@
+/* src/App.css */
+
+/*=============== GOOGLE FONTS ===============*/
+@import url("https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400;500;600&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap');
+/* App.css o index.css */
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Pacifico&display=swap');
+
+/*=============== VARIABLES CSS ===============*/
+:root {
+    --bg-color: hsl(231, 69%, 16%);
+    --card-bg-color: hsl(235, 48%, 70%);
+    --text-color: hsl(0, 0%, 95%);
+    --primary-button-color: hsl(38, 92%, 58%);
+    --secondary-color: hsl(195, 75%, 52%);
+    --first-color: hsl(38, 92%, 58%);
+    --first-color-light: hsl(38, 100%, 78%);
+    --first-color-alt: hsl(32, 75%, 50%);
+    --dark-color: hsl(212, 40%, 12%);
+    --white-color: hsl(212, 4%, 95%);
+    --body-color: #101444;
+    --container-color: hsl(212, 42%, 20%);
+    --body-font: "Bai Jamjuree", sans-serif;
+    --h2-font-size: 1.5rem;
+    --normal-font-size: 1rem;
+}
+
+/*=============== BASE (General Resets & Body) ===============*/
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--body-font);
+    margin: 0;
+    background-color: var(--body-color);
+    color: var(--text-color);
+    /* ELIMINAMOS CUALQUIER PADDING-TOP AQUÍ */
+    /* padding-top: Xrem; */ 
+}
+
+/* ELIMINAMOS CUALQUIER AJUSTE DE #mainCarousel AQUÍ */
+/* #mainCarousel { ... } */
+
+/* Otros estilos generales que ya tuvieras */
+.carousel-caption {
+    background: rgba(0, 0, 0, 0.5);
+    padding: 1rem;
+    border-radius: 10px;
+}
+
+a {
+    text-decoration: none;
+}
+
+img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+.container {
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 1rem;
+}
+
+.section {
+    padding: 4rem 0 2rem;
+}
+
+.section__title {
+    font-size: var(--h2-font-size);
+    color: var(--text-color);
+    text-align: center;
+    margin-bottom: 2rem;
+}
