@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaUser, FaLock, FaHome } from 'react-icons/fa';
 import { IoCloseSharp } from 'react-icons/io5';
+import Swal from 'sweetalert2';
 import './Login.css';
 
 export default function Login() {
@@ -26,7 +27,7 @@ export default function Login() {
   const [tokenNumber, setTokenNumber] = useState('');
   const [tokenError, setTokenError] = useState('');
 
-  
+
 
   // Cooldown para evitar spam de envío de correo recuperación
   useEffect(() => {
@@ -43,8 +44,8 @@ export default function Login() {
   e.preventDefault();
 
   const formData = new URLSearchParams();
-  formData.append("email", email);        // nombre debe coincidir con .usernameParameter
-  formData.append("password", password);  // y con .passwordParameter
+  formData.append("email", email);
+  formData.append("password", password);
 
   try {
     const response = await fetch("http://localhost:8080/auth/login", {
@@ -53,52 +54,71 @@ export default function Login() {
         "Content-Type": "application/x-www-form-urlencoded",
       },
       body: formData,
-      credentials: "include", // IMPORTANTE para mantener sesión vía cookie
+      credentials: "include",
     });
 
     if (response.ok) {
-  const data = await response.json();
-  console.log("Login exitoso:", data);
+      const data = await response.json();
+      console.log("Login exitoso:", data);
 
-  // Redirigir según rol
-  const roles = data.roles;
-
-    if (roles.includes("ROLE_admin")) {
-      navigate("/dashboard-profesor");
-    } else if (roles.includes("ROLE_docente")) {
-      navigate("/profesor/vista-cursos");
-    } else if (roles.includes("ROLE_estudiante")) {
-      navigate("/");
+      const roles = data.roles;
+      if (roles.includes("ROLE_admin")) {
+        navigate("/dashboard-profesor");
+      } else if (roles.includes("ROLE_docente")) {
+        navigate("/profesor/vista-cursos");
+      } else if (roles.includes("ROLE_estudiante")) {
+        navigate("/");
+      } else {
+        navigate("/error");
+      }
     } else {
-      navigate("/error"); // fallback
+      const data = await response.json();
+      Swal.fire({
+        icon: 'error',
+        title: 'Credenciales inválidas',
+        text: data?.error || 'Verifica tu email y contraseña.',
+      });
     }
-  }
   } catch (error) {
     console.error("Error en login:", error);
-    alert("Ocurrió un error");
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Ocurrió un error al iniciar sesión',
+    });
   }
 };
+
 
   // ENVÍO CORREO RECUPERACIÓN
   const handleSendRecoveryEmail = async (e) => {
     e.preventDefault();
     if (cooldown > 0) return;
-    setEmailError('');
-    setEmailSuccess('');
 
     try {
       const res = await fetch('http://localhost:8080/auth/recuperar', {
         method: 'POST',
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({ email: emailForRecovery }),
       });
 
       const data = await res.json();
 
       if (data.error) {
-        setEmailError(data.error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error al enviar correo',
+          text: data.error,
+        });
       } else {
-        setEmailSuccess(data.mensaje || 'Correo enviado correctamente');
+        Swal.fire({
+          icon: 'success',
+          title: 'Correo enviado',
+          text: data.mensaje || 'Revisa tu bandeja de entrada.',
+          timer: 2000,
+          showConfirmButton: false,
+        });
+
         setTokenLetter(data.letraToken || '');
         setTimeout(() => {
           setForgotPasswordStep('token');
@@ -107,9 +127,14 @@ export default function Login() {
       }
     } catch (err) {
       console.error(err);
-      setEmailError('Error al enviar el correo');
+      Swal.fire({
+        icon: 'error',
+        title: 'Error de conexión',
+        text: 'No se pudo enviar el correo. Intenta nuevamente.',
+      });
     }
   };
+
 
   // VALIDACIÓN DEL TOKEN
   const handleValidateToken = async (e) => {
@@ -127,8 +152,17 @@ export default function Login() {
       const res = await fetch(`http://localhost:8080/auth/verificar?token=${encodeURIComponent(fullToken)}`);
 
       if (res.ok) {
+        // Mostrar confirmación antes de redirigir
+        await Swal.fire({
+          icon: 'success',
+          title: 'Token válido',
+          text: 'Serás redirigido para cambiar tu contraseña.',
+          confirmButtonText: 'Continuar',
+        });
+
         navigate(`/changepassword?token=${encodeURIComponent(fullToken)}`);
-        // Limpieza y cierre
+
+
         setShowForgotPasswordModal(false);
         setForgotPasswordStep('email');
         setEmailForRecovery('');
@@ -136,12 +170,21 @@ export default function Login() {
         setTokenNumber('');
       } else {
         const data = await res.json();
-        setTokenError(data.error || 'Token inválido o expirado');
+        Swal.fire({
+          icon: 'error',
+          title: 'Token inválido',
+          text: data.error || 'Token inválido o expirado',
+        });
       }
     } catch (err) {
       console.error(err);
-      setTokenError('Error al validar el token');
+      Swal.fire({
+        icon: 'error',
+        title: 'Error de conexión',
+        text: 'No se pudo validar el token. Intenta nuevamente.',
+      });
     }
+
   };
 
   const handleCloseModal = () => {
