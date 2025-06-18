@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom'; // Importa useNavigate y useLocation
 import { FaLock, FaHome } from 'react-icons/fa'; // Iconos
+import Swal from 'sweetalert2';
 
 import './ChangePassword.css'; // Su propio CSS
 
@@ -26,43 +27,62 @@ export default function ChangePassword() {
     }
   }, [location.search, navigate]); // Dependencias: re-ejecutar si la URL cambia
 
-  const handleChangePasswordSubmit = (e) => {
+  const handleChangePasswordSubmit = async (e) => {
     e.preventDefault();
+
     if (newPassword !== confirmPassword) {
-      alert('Las contraseñas no coinciden.');
+      Swal.fire({
+        icon: 'warning',
+        title: 'Las contraseñas no coinciden',
+        text: 'Por favor, asegúrate de que ambas contraseñas sean iguales.',
+      });
       return;
     }
+
     if (!token) {
-      alert('No se pudo procesar la solicitud: token no encontrado.');
+      Swal.fire({
+        icon: 'error',
+        title: 'Token no encontrado',
+        text: 'No se pudo procesar la solicitud. Intenta desde el enlace enviado a tu correo.',
+      });
       return;
     }
 
-    console.log('Enviando nueva contraseña:', newPassword, 'con token:', token);
-    // Aquí iría tu lógica para enviar la nueva contraseña y el token a tu API
-    // Ejemplo de llamada a API (AJAX/Fetch):
-    // fetch('/api/reset-password', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({ token, newPassword })
-    // })
-    // .then(response => response.json())
-    // .then(data => {
-    //   if (data.success) {
-    //     alert('Contraseña cambiada exitosamente. Por favor, inicia sesión.');
-    //     navigate('/login'); // Redirige al login después de cambiarla
-    //   } else {
-    //     alert('Error al cambiar la contraseña: ' + data.message);
-    //   }
-    // })
-    // .catch(error => {
-    //   console.error('Error:', error);
-    //   alert('Hubo un problema al intentar cambiar la contraseña.');
-    // });
+    try {
+      // Aquí iría la petición al backend para cambiar la contraseña, por ejemplo:
+      // const response = await fetch(`http://localhost:8080/auth/cambiar-password?token=${token}`, {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({ nuevaPassword: newPassword }),
+      // });
 
-    // SIMULACIÓN (eliminar en producción):
-    alert('Contraseña cambiada exitosamente. Redirigiendo al login.');
-    navigate('/login'); // Redirige al login después de simular el cambio
+      // if (response.ok) {
+      await Swal.fire({
+        icon: 'success',
+        title: 'Contraseña cambiada',
+        text: 'Tu contraseña ha sido actualizada exitosamente.',
+        confirmButtonText: 'Iniciar sesión'
+      });
+      navigate('/login');
+      // } else {
+      //   const error = await response.text();
+      //   Swal.fire({
+      //     icon: 'error',
+      //     title: 'Error al cambiar la contraseña',
+      //     text: error || 'Intenta nuevamente.',
+      //   });
+      // }
+
+    } catch (error) {
+      console.error('Error cambiando contraseña:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error en el servidor',
+        text: 'No se pudo conectar. Intenta más tarde.',
+      });
+    }
   };
+
 
   if (!token && location.search) { // Opcional: Mostrar un loader mientras se valida el token o si no hay.
     return (
@@ -114,3 +134,27 @@ export default function ChangePassword() {
     </div>
   );
 }
+
+//handleChangePasswordSubmit
+// Aquí iría tu lógica para enviar la nueva contraseña y el token a tu API
+// Ejemplo de llamada a API (AJAX/Fetch):
+// fetch('/api/reset-password', {
+//   method: 'POST',
+//   headers: { 'Content-Type': 'application/json' },
+//   body: JSON.stringify({ token, newPassword })
+// })
+// .then(response => response.json())
+// .then(data => {
+//   if (data.success) {
+//     alert('Contraseña cambiada exitosamente. Por favor, inicia sesión.');
+//     navigate('/login'); // Redirige al login después de cambiarla
+//   } else {
+//     alert('Error al cambiar la contraseña: ' + data.message);
+//   }
+// })
+// .catch(error => {
+//   console.error('Error:', error);
+//   alert('Hubo un problema al intentar cambiar la contraseña.');
+// });
+
+// SIMULACIÓN (eliminar en producción):

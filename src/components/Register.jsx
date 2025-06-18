@@ -4,6 +4,7 @@ import Select from 'react-select';
 import { FaUser, FaEnvelope, FaLock, FaPhone, FaIdCard, FaBuilding, FaHome } from 'react-icons/fa';
 import './Register.css';
 import { PiX } from 'react-icons/pi';
+import Swal from 'sweetalert2';
 
 export default function Register() {
   const navigate = useNavigate(); // Para redireccionar después del registro
@@ -95,7 +96,11 @@ export default function Register() {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      alert('Las contraseñas no coinciden.');
+      Swal.fire({
+        icon: 'warning',
+        title: 'Las contraseñas no coinciden',
+        text: 'Por favor, verifica que ambas contraseñas sean iguales.',
+      });
       return;
     }
 
@@ -121,22 +126,39 @@ export default function Register() {
       });
 
       if (response.ok) {
-        alert('Registro exitoso.');
+        await Swal.fire({
+          icon: 'success',
+          title: 'Registro exitoso',
+          text: 'Ya puedes iniciar sesión.',
+          confirmButtonText: 'Ir al login'
+        });
         navigate('/login');
       } else {
         const contentType = response.headers.get("content-type");
         if (contentType && contentType.includes("application/json")) {
           const errorData = await response.json();
-          alert(`Error al registrar: ${errorData.message || 'Inténtalo de nuevo'}`);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error al registrar',
+            text: errorData.message || 'Inténtalo de nuevo',
+          });
         } else {
           const text = await response.text();
-          alert(`Error al registrar: ${text}`);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error inesperado',
+            text: text,
+          });
         }
       }
 
     } catch (error) {
       console.error('Error al registrar usuario:', error);
-      alert('Error en la conexión al servidor.');
+      Swal.fire({
+        icon: 'error',
+        title: 'Error en el servidor',
+        text: 'No se pudo conectar con el servidor. Intenta más tarde.',
+      });
     }
   };
 

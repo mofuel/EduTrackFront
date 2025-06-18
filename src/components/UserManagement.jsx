@@ -6,6 +6,7 @@ import {
   FaUserCircle, FaBell, FaPlus, FaFilter, FaSort, FaFileExport
 } from 'react-icons/fa';
 import logo from '../assets/logo.png';
+import Swal from 'sweetalert2';
 
 import AddUserModal from './AddUserModal';
 import EditUserModal from './EditUserModal';
@@ -60,52 +61,111 @@ export default function UserManagement() {
   };
 
   const handleDelete = async (userId) => {
-    if (window.confirm(`¿Estás seguro de eliminar al usuario con ID: ${userId}?`)) {
+    const result = await Swal.fire({
+      title: '¿Estás seguro?',
+      text: `Estás por eliminar al usuario con ID: ${userId}`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    });
+
+    if (result.isConfirmed) {
       try {
-        await fetch(`http://localhost:8080/dash/usuarios/eliminar/${userId}`, {
+        const response = await fetch(`http://localhost:8080/dash/usuarios/eliminar/${userId}`, {
           method: 'DELETE',
           credentials: 'include'
         });
-        fetchUsers();
-        alert('Usuario eliminado correctamente');
+
+        if (response.ok) {
+          await fetchUsers(); // Recarga lista de usuarios
+          Swal.fire({
+            icon: 'success',
+            title: 'Usuario eliminado',
+            text: 'El usuario ha sido eliminado correctamente.',
+          });
+        } else {
+          const errorText = await response.text();
+          Swal.fire({
+            icon: 'error',
+            title: 'Error al eliminar',
+            text: errorText || 'No se pudo eliminar el usuario.',
+          });
+        }
+
       } catch (error) {
         console.error('Error al eliminar usuario:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error de red',
+          text: 'No se pudo conectar con el servidor.',
+        });
       }
     }
   };
 
   const handleSaveNewUser = async (newUserData) => {
-  if (newUserData.password !== newUserData.confirmPassword) {
-    alert('Las contraseñas no coinciden');
-    return;
-  }
-
-  // Normalizar rol para enviar sin ROLE_ (si existiera)
-  if (newUserData.rol && newUserData.rol.toUpperCase().startsWith('ROLE_')) {
-    newUserData.rol = newUserData.rol.substring(5); // Quita "ROLE_"
-  }
-
-  try {
-    const response = await fetch('http://localhost:8080/api/usuarios/registro', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(newUserData)
-    });
-
-    if (response.ok) {
-      alert('Usuario registrado correctamente');
-      fetchUsers();
-      setShowAddUserModal(false);
-    } else {
-      const errorText = await response.text();
-      alert(`Error: ${errorText}`);
+    if (newUserData.password !== newUserData.confirmPassword) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Las contraseñas no coinciden.'
+      });
+      return;
     }
-  } catch (error) {
-    console.error('Error al registrar usuario:', error);
-  }
-};
+
+    // Normalizar rol (quitar ROLE_ si existe)
+    if (newUserData.rol && newUserData.rol.toUpperCase().startsWith('ROLE_')) {
+      newUserData.rol = newUserData.rol.substring(5);
+    }
+
+    try {
+      const response = await fetch('http://localhost:8080/api/usuarios/registro', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(newUserData)
+      });
+
+      if (response.ok) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Usuario registrado',
+          text: 'El usuario se ha registrado correctamente.'
+        });
+        fetchUsers(); // Actualiza la lista de usuarios
+        setShowAddUserModal(false); // Cierra modal
+      } else {
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          const errorData = await response.json();
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: errorData.message || 'No se pudo registrar el usuario.'
+          });
+        } else {
+          const errorText = await response.text();
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: errorText || 'No se pudo registrar el usuario.'
+          });
+        }
+      }
+
+    } catch (error) {
+      console.error('Error al registrar usuario:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error de red',
+        text: 'No se pudo conectar con el servidor.'
+      });
+    }
+  };
 
 
 
@@ -121,16 +181,29 @@ export default function UserManagement() {
       });
 
       if (response.ok) {
-        fetchUsers();
-        alert('Usuario actualizado correctamente');
+        await fetchUsers();
+        Swal.fire({
+          icon: 'success',
+          title: 'Usuario actualizado',
+          text: 'Los datos del usuario fueron actualizados correctamente.'
+        });
         setShowEditUserModal(false);
         setEditingUser(null);
       } else {
         const errorText = await response.text();
-        alert(`Error: ${errorText}`);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error al actualizar',
+          text: errorText || 'No se pudo actualizar el usuario.'
+        });
       }
     } catch (error) {
       console.error('Error al actualizar usuario:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error de red',
+        text: 'No se pudo conectar con el servidor.'
+      });
     }
   };
 

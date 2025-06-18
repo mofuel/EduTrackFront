@@ -25,13 +25,20 @@ export default function AddUserModal({ onClose, onSave }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     if (formData.password !== formData.confirmPassword) {
-      alert("Las contraseñas no coinciden.");
+      Swal.fire({
+        icon: 'warning',
+        title: 'Las contraseñas no coinciden',
+        text: 'Por favor, asegúrate de que ambas contraseñas sean iguales.',
+      });
       return;
     }
-    // `formData` ahora contiene 'nombre' y 'apellido'
+
+    // Si todo está bien, puedes continuar
     onSave(formData);
   };
+
 
   return (
     <div className="user-management-modal-overlay">
@@ -48,8 +55,8 @@ export default function AddUserModal({ onClose, onSave }) {
               <label htmlFor="nombre">Nombres</label> {/* <--- ¡CAMBIO AQUÍ en htmlFor! */}
               <input
                 type="text"
-                id="nombre"    
-                name="nombre"  
+                id="nombre"
+                name="nombre"
                 value={formData.nombre}
                 onChange={handleChange}
                 required
@@ -73,7 +80,7 @@ export default function AddUserModal({ onClose, onSave }) {
               <label htmlFor="apellido">Apellidos</label> {/* <--- ¡CAMBIO AQUÍ en htmlFor! */}
               <input
                 type="text"
-                id="apellido"    
+                id="apellido"
                 name="apellido"
                 value={formData.apellido}
                 onChange={handleChange}
