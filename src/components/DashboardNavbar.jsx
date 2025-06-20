@@ -1,43 +1,89 @@
 // src/components/DashboardNavbar.jsx
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import './DashboardNavbar.css'; // Estilos para este Navbar
+import React, { useEffect, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Dropdown, Button } from 'react-bootstrap';
+import { FaBars, FaBell, FaUserCircle, FaSignOutAlt } from 'react-icons/fa';
+import EduTrackLogo from '../assets/logo.png';
+import './DashboardNavbar.css';
 
 export default function DashboardNavbar() {
-  const location = useLocation(); // Hook para obtener la ubicación actual
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
+  const [nombreUsuario, setNombreUsuario] = useState('');
+
+  const token = localStorage.getItem('jwt');
+
+  useEffect(() => {
+    const nombre = localStorage.getItem('nombre');
+    if (nombre) {
+      setNombreUsuario(nombre);
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('jwt');
+    localStorage.removeItem('rol');
+    localStorage.removeItem('email');
+    localStorage.removeItem('nombre');
+    navigate('/login');
+  };
+
+  const handleMobileNavToggle = () => {
+    setIsMobileNavOpen(!isMobileNavOpen);
+  };
 
   return (
-    <nav className="dashboard-navbar">
-      <div className="dashboard-navbar-brand">
-        <Link to="/dashboard-profesor">Mi Plataforma</Link> {/* O el nombre de tu plataforma */}
+    <nav className="profesor-navbar-modern">
+      {/* Logo y nombre */}
+      <div className="navbar-brand-modern">
+        <Link to="/dashboard-profesor">
+          <img src={EduTrackLogo} alt="EduTrack Logo" className="navbar-logo-image" />
+          EduTrack
+        </Link>
       </div>
-      <ul className="dashboard-navbar-links">
-        <li className={location.pathname === '/dashboard-profesor' ? 'active' : ''}>
-          <Link to="/dashboard-profesor">Mi Dashboard</Link>
-        </li>
-        {/* Aquí puedes añadir enlaces si el profesor tiene una "página de inicio" diferente al landing */}
-        {/* Por ahora, asumiremos que "Inicio" puede ser la misma página principal de la app */}
-        <li className={location.pathname === '/' ? 'active' : ''}>
-          <Link to="/">Inicio</Link> {/* Enlaza a la HomePage principal de tu aplicación */}
-        </li>
-        {/*
-          IMPORTANTE: Si "Usuarios" y "Configuración" son secciones REALES
-          dentro del dashboard del profesor, necesitarán sus propias rutas y componentes.
-          Por ahora, las pongo como enlaces ficticios o futuras rutas.
-          Si el profesor REALMENTE gestiona usuarios, entonces estas rutas
-          "/usuarios" y "/configuracion" deberán llevar a sus componentes específicos.
-        */}
-        <li className={location.pathname === '/usuarios' ? 'active' : ''}>
-          <Link to="/usuarios">Usuarios</Link> {/* Ruta para la gestión de usuarios */}
-        </li>
-        <li className={location.pathname === '/configuracion' ? 'active' : ''}>
-          <Link to="/configuracion">Configuración</Link> {/* Ruta para los ajustes */}
-        </li>
-        {/* Puedes añadir un botón de cerrar sesión aquí si quieres */}
-        {/* <li>
-          <button className="dashboard-logout-btn" onClick={() => console.log('Cerrar sesión')}>Cerrar Sesión</button>
-        </li> */}
+
+      {/* Botón menú móvil */}
+      <div className="navbar-toggle-modern" onClick={handleMobileNavToggle}>
+        <FaBars />
+      </div>
+
+      {/* Enlaces de navegación */}
+      <ul className={`navbar-links-modern ${isMobileNavOpen ? 'open' : ''}`}>
+        <li><Link to="/dashboard-profesor" onClick={() => setIsMobileNavOpen(false)}>Inicio</Link></li>
+        <li><Link to="#" onClick={() => setIsMobileNavOpen(false)}>Mis Cursos</Link></li>
+        <li><Link to="#" onClick={() => setIsMobileNavOpen(false)}>Mis Alumnos</Link></li>
+        <li><Link to="#" onClick={() => setIsMobileNavOpen(false)}>Mensajes</Link></li>
+        <li><Link to="/perfil" onClick={() => setIsMobileNavOpen(false)}>Mi Perfil</Link></li>
       </ul>
+
+      {/* Usuario y notificaciones */}
+      <div className="navbar-user-section-modern">
+        <FaBell className="navbar-icon-modern" />
+
+        {token ? (
+          <Dropdown align="end" className="user-dropdown-modern">
+            <Dropdown.Toggle variant="outline-light" id="dropdown-user">
+              <span className="user-name-text">Hola, {nombreUsuario}</span>
+              <FaUserCircle className="user-avatar-nav-modern ms-2" />
+            </Dropdown.Toggle>
+
+            <Dropdown.Menu>
+              <Dropdown.Item as={Link} to="/perfil">Perfil</Dropdown.Item>
+              <Dropdown.Divider />
+              <Dropdown.Item onClick={handleLogout}>
+                <FaSignOutAlt className="me-2" />
+                Cerrar sesión
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+        ) : (
+          <Button variant="outline-light" onClick={() => navigate('/login')}>
+            Login
+          </Button>
+        )}
+      </div>
     </nav>
   );
 }

@@ -24,6 +24,9 @@ import UserManagement from './components/UserManagement';       // El nuevo c
 // --- NUEVA IMPORTACIÓN PARA LA VISTA DE CURSOS DEL PROFESOR ---
 import CursoVProfesor from './components/CursoVProfesor';
 
+import ModulosCurso from './components/ModulosCurso';
+
+
 
 // Estilos globales y de librerías
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -93,6 +96,8 @@ function App() {
 
         {/* --- NUEVA RUTA PARA LA VISTA DE CURSOS DEL PROFESOR --- */}
         <Route path="/profesor/vista-cursos" element={<CursoVProfesor />} />
+
+        <Route path="/modulos-curso/:cursoId" element={<ModulosCurso />} />
 
 
         {/* Ruta para la página de Register */}
