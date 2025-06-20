@@ -1,9 +1,9 @@
 // src/components/Navbar.jsx
 import React, { useEffect, useState } from "react";
 // Importamos Link y useLocation de react-router-dom
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 // Importamos los componentes de React-Bootstrap
-import { Navbar, Nav, Container, Button } from "react-bootstrap";
+import { Navbar, Nav, Container, Button, Dropdown } from "react-bootstrap";
 import logo from "../assets/logo.png";
 import "./Navbar.css";
 
@@ -11,19 +11,56 @@ export default function AppNavbar() {
   const [hasScrolled, setHasScrolled] = useState(false);
   const location = useLocation(); // Hook para obtener la URL actual
 
+  const navigate = useNavigate();
+
+  const token = localStorage.getItem("jwt");
+  const [nombreUsuario, setNombreUsuario] = useState(null);
+
+
   useEffect(() => {
     const handleScroll = () => {
-      const scrollThreshold = 50; // Umbral de scroll en píxeles
-      if (window.scrollY > scrollThreshold) {
-        setHasScrolled(true);
+      const scrollThreshold = 50;
+      setHasScrolled(window.scrollY > scrollThreshold);
+    };
+
+    // Validación de sesión y nombre
+    const verificarSesion = () => {
+      const token = localStorage.getItem("jwt");
+      const nombre = localStorage.getItem("nombre");
+
+      // Opcional: Verifica si el token expiró (usando JWT base64)
+      if (token) {
+        try {
+          const payload = JSON.parse(atob(token.split('.')[1]));
+          const expiracion = payload.exp * 1000; // JWT exp es en segundos
+          const ahora = Date.now();
+
+          if (expiracion < ahora) {
+            // Token expirado
+            localStorage.clear();
+            setNombreUsuario(null);
+          } else {
+            // Token válido
+            setNombreUsuario(nombre || null);
+          }
+        } catch (e) {
+          console.error("Token inválido:", e);
+          localStorage.clear();
+          setNombreUsuario(null);
+        }
       } else {
-        setHasScrolled(false);
+        setNombreUsuario(null);
       }
     };
 
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    verificarSesion();
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [location.pathname]);
+
 
   const handleScrollToSection = (id) => {
     // Solo hace scroll si ya estás en la ruta principal ("/")
@@ -37,6 +74,15 @@ export default function AppNavbar() {
     // y luego el componente HomePage se montará y el useEffect de HomePage
     // que incluye el scroll-to-top se ejecutará. Para scroll a una sección específica
     // desde otra página, como te comenté, se necesitaría un enfoque más avanzado (hash routing).
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("jwt");
+    localStorage.removeItem("rol");
+    localStorage.removeItem("email");
+    localStorage.removeItem("nombre");
+    setNombreUsuario(null); 
+    navigate("/login");
   };
 
 
@@ -80,7 +126,7 @@ export default function AppNavbar() {
               Certificados
             </Nav.Link>
 
-             {/* Nav.Link para 'Testimonios' (asume que es una sección en tu Home) */}
+            {/* Nav.Link para 'Testimonios' (asume que es una sección en tu Home) */}
             <Nav.Link
               as={Link}
               to="/" // Navega a la Home
@@ -103,25 +149,39 @@ export default function AppNavbar() {
 
             {/* Botón de Login */}
             {/* Usamos Button con la prop 'as={Link}' y 'to="/login"' */}
-            <Button
-              as={Link}
-              to="/login"
-              variant="outline-light"
-              className={`custom-btn-login me-4 ${location.pathname === '/login' ? 'active-btn' : ''}`}
-            >
-              Login
-            </Button>
+            {token ? (
+              <Dropdown align="end" className="me-3">
+                <Dropdown.Toggle variant="outline-light" id="dropdown-user">
+                  Hola, {nombreUsuario}
+                </Dropdown.Toggle>
 
-            {/* Botón de Registrarse */}
-            {/* Usamos Button con la prop 'as={Link}' y 'to="/register"' */}
-            <Button
-              as={Link}
-              to="/register"
-              variant="light"
-              className={`custom-btn-register ${location.pathname === '/register' ? 'active-btn' : ''}`}
-            >
-              Registrarse
-            </Button>
+                <Dropdown.Menu>
+                  <Dropdown.Item as={Link} to="/perfil">Perfil</Dropdown.Item>
+                  <Dropdown.Divider />
+                  <Dropdown.Item onClick={handleLogout}>Cerrar sesión</Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+            ) : (
+              <>
+                <Button
+                  as={Link}
+                  to="/login"
+                  variant="outline-light"
+                  className={`custom-btn-login me-4 ${location.pathname === '/login' ? 'active-btn' : ''}`}
+                >
+                  Login
+                </Button>
+
+                <Button
+                  as={Link}
+                  to="/register"
+                  variant="light"
+                  className={`custom-btn-register ${location.pathname === '/register' ? 'active-btn' : ''}`}
+                >
+                  Registrarse
+                </Button>
+              </>
+            )}
           </Nav>
         </Navbar.Collapse>
       </Container>

@@ -41,53 +41,58 @@ export default function Login() {
 
   // LOGIN
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const formData = new URLSearchParams();
-  formData.append("email", email);
-  formData.append("password", password);
+    const credentials = { email, password };
 
-  try {
-    const response = await fetch("http://localhost:8080/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: formData,
-      credentials: "include",
-    });
+    try {
+      const response = await fetch("http://localhost:8080/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(credentials),
+      });
 
-    if (response.ok) {
-      const data = await response.json();
-      console.log("Login exitoso:", data);
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Login exitoso:", data);
 
-      const roles = data.roles;
-      if (roles.includes("ROLE_admin")) {
-        navigate("/dashboard-profesor");
-      } else if (roles.includes("ROLE_docente")) {
-        navigate("/profesor/vista-cursos");
-      } else if (roles.includes("ROLE_estudiante")) {
-        navigate("/");
+        // Guardar JWT y datos del usuario
+        localStorage.setItem("jwt", data.token);
+        localStorage.setItem("email", data.email);
+        localStorage.setItem("rol", data.rol);
+        localStorage.setItem("nombre", data.nombre);
+
+        // Redirigir según rol
+        switch (data.rol) {
+          case "ROLE_admin":
+            navigate("/dashboard-profesor");
+            break;
+          case "ROLE_docente":
+            navigate("/profesor/vista-cursos");
+            break;
+          case "ROLE_estudiante":
+            navigate("/");
+            break;
+          default:
+            navigate("/error");
+        }
       } else {
-        navigate("/error");
+        const data = await response.json();
+        Swal.fire({
+          icon: 'error',
+          title: 'Credenciales inválidas',
+          text: data.error || 'Verifica tu email y contraseña.',
+        });
       }
-    } else {
-      const data = await response.json();
+    } catch (error) {
+      console.error("Error en login:", err);
       Swal.fire({
         icon: 'error',
-        title: 'Credenciales inválidas',
-        text: data?.error || 'Verifica tu email y contraseña.',
+        title: 'Oops...',
+        text: 'Ocurrió un error al iniciar sesión',
       });
     }
-  } catch (error) {
-    console.error("Error en login:", error);
-    Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: 'Ocurrió un error al iniciar sesión',
-    });
-  }
-};
+  };
 
 
   // ENVÍO CORREO RECUPERACIÓN
