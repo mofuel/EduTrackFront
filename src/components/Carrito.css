@@ -1,0 +1,28 @@
+.carrito-wrapper {
+  padding-top: 90px; /* Deja espacio para el navbar fijo */
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.carrito-container {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 15px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+}
+
+.curso-card {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+  transition: transform 0.2s ease;
+}
+
+.curso-card:hover {
+  transform: translateY(-5px);
+}
+
+.total-section {
+  margin-top: 2rem;
+  text-align: right;
+}

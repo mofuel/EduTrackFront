@@ -22,7 +22,7 @@ export default function ModulosCurso() {
   const [modoEdicionContenido, setModoEdicionContenido] = useState(false);
   const [moduloIdEditando, setModuloIdEditando] = useState(null);
   const [contenidoIdEditando, setContenidoIdEditando] = useState(null);
-
+  const [disponibleParaCompra, setDisponibleParaCompra] = useState(false);
 
   const fetchModulos = async () => {
     setLoading(true);
@@ -45,6 +45,23 @@ export default function ModulosCurso() {
 
   useEffect(() => {
     fetchModulos();
+
+    // Obtener estado del curso (disponibilidad)
+    const fetchCurso = async () => {
+      try {
+        const res = await fetch(`http://localhost:8080/api/cursos/${cursoId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const data = await res.json();
+        setDisponibleParaCompra(data.disponibleParaCompra);
+      } catch (err) {
+        console.error("Error al cargar estado de disponibilidad:", err);
+      }
+    };
+
+    fetchCurso();
   }, [cursoId]);
 
   const toggleModulo = (id) => {
@@ -221,141 +238,183 @@ export default function ModulosCurso() {
     }
   };
 
+  const toggleDisponibilidad = async () => {
+    try {
+      const res = await fetch(
+        `http://localhost:8080/api/cursos/${cursoId}/disponibilidad?disponible=${!disponibleParaCompra}`,
+        {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (res.ok) {
+        setDisponibleParaCompra(!disponibleParaCompra);
+        Swal.fire(
+          "Actualizado",
+          `Curso ahora está ${!disponibleParaCompra ? "disponible" : "no disponible"} para compra`,
+          "success"
+        );
+      } else {
+        const error = await res.text();
+        Swal.fire("Error", error, "error");
+      }
+    } catch (err) {
+      console.error("Error actualizando disponibilidad:", err);
+    }
+  };
+
+
 
 
 
   return (
-  <div className="container mt-4">
-    <h2>Módulos del Curso</h2>
-    <Button className="mb-3" onClick={() => {
-      setModoEdicionModulo(false);
-      setNuevoModulo({ titulo: '', descripcion: '' });
-      setShowNuevoModulo(true);
-    }}>
-      + Nuevo Módulo
-    </Button>
+    <div className="container mt-4">
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        <h2 className="mb-0">Módulos del Curso</h2>
+      </div>
 
-    {loading ? (
-      <Spinner animation="border" />
-    ) : modulos.length === 0 ? (
-      <p>No hay módulos aún.</p>
-    ) : (
-      modulos.map(modulo => (
-        <Card key={modulo.id} className="mb-3">
-          <Card.Header onClick={() => toggleModulo(modulo.id)} style={{ cursor: 'pointer' }}>
-            <h5>{modulo.titulo}</h5>
-          </Card.Header>
-          <Collapse in={moduloExpandido === modulo.id}>
-            <div>
-              <Card.Body>
-                <p>{modulo.descripcion}</p>
-                <h6>Contenidos:</h6>
-                {modulo.contenidos.length > 0 ? (
-                  <ul>
-                    {modulo.contenidos.map(cont => (
-                      <li key={cont.id}>
-                        <strong>{cont.tipo.toUpperCase()}</strong>:{" "}
-                        <a href={cont.url} target="_blank" rel="noopener noreferrer">{cont.titulo}</a>
-                        {/* Botones de contenido */}
-                        <Button variant="warning" size="sm" className="ms-2" onClick={() => handleEditarContenido(cont, modulo.id)}>✏️</Button>
-                        <Button variant="danger" size="sm" className="ms-2" onClick={() => handleEliminarContenido(cont.id)}>🗑️</Button>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p>No hay contenidos.</p>
-                )}
-
-                <Button size="sm" className="me-2" onClick={() => {
-                  setModuloSeleccionado(modulo.id);
-                  setModoEdicionContenido(false);
-                  setNuevoContenido({ titulo: '', tipo: 'pdf', url: '' });
-                  setShowNuevoContenido(true);
-                }}>
-                  + Agregar Contenido
-                </Button>
-
-                {/* Botones de módulo */}
-                <Button variant="warning" size="sm" className="me-2" onClick={() => handleEditarModulo(modulo)}>Editar</Button>
-                <Button variant="danger" size="sm" onClick={() => handleEliminarModulo(modulo.id)}>Eliminar</Button>
-              </Card.Body>
-            </div>
-          </Collapse>
-        </Card>
-      ))
-    )}
-
-    {/* Modal: nuevo módulo */}
-    <Modal show={showNuevoModulo} onHide={() => setShowNuevoModulo(false)}>
-      <Modal.Header closeButton>
-        <Modal.Title>{modoEdicionModulo ? "Editar Módulo" : "Nuevo Módulo"}</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <Form>
-          <Form.Group>
-            <Form.Label>Título</Form.Label>
-            <Form.Control
-              value={nuevoModulo.titulo}
-              onChange={e => setNuevoModulo({ ...nuevoModulo, titulo: e.target.value })}
-            />
-          </Form.Group>
-          <Form.Group>
-            <Form.Label>Descripción</Form.Label>
-            <Form.Control
-              as="textarea"
-              value={nuevoModulo.descripcion}
-              onChange={e => setNuevoModulo({ ...nuevoModulo, descripcion: e.target.value })}
-            />
-          </Form.Group>
-        </Form>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button onClick={modoEdicionModulo ? handleActualizarModulo : handleNuevoModulo}>
-          {modoEdicionModulo ? "Actualizar" : "Guardar"}
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        <Button
+          onClick={() => {
+            setModoEdicionModulo(false);
+            setNuevoModulo({ titulo: '', descripcion: '' });
+            setShowNuevoModulo(true);
+          }}
+        >
+          + Nuevo Módulo
         </Button>
-      </Modal.Footer>
-    </Modal>
 
-    {/* Modal: nuevo contenido */}
-    <Modal show={showNuevoContenido} onHide={() => setShowNuevoContenido(false)}>
-      <Modal.Header closeButton>
-        <Modal.Title>{modoEdicionContenido ? "Editar Contenido" : "Nuevo Contenido"}</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <Form>
-          <Form.Group>
-            <Form.Label>Título</Form.Label>
-            <Form.Control
-              value={nuevoContenido.titulo}
-              onChange={e => setNuevoContenido({ ...nuevoContenido, titulo: e.target.value })}
-            />
-          </Form.Group>
-          <Form.Group>
-            <Form.Label>Tipo</Form.Label>
-            <Form.Select
-              value={nuevoContenido.tipo}
-              onChange={e => setNuevoContenido({ ...nuevoContenido, tipo: e.target.value })}
-            >
-              <option value="pdf">PDF</option>
-              <option value="video">Video</option>
-              <option value="enlace">Enlace</option>
-            </Form.Select>
-          </Form.Group>
-          <Form.Group>
-            <Form.Label>URL</Form.Label>
-            <Form.Control
-              value={nuevoContenido.url}
-              onChange={e => setNuevoContenido({ ...nuevoContenido, url: e.target.value })}
-            />
-          </Form.Group>
-        </Form>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button onClick={modoEdicionContenido ? handleActualizarContenido : handleNuevoContenido}>
-          {modoEdicionContenido ? "Actualizar" : "Agregar"}
+        <Button
+          variant={disponibleParaCompra ? "success" : "secondary"}
+          onClick={toggleDisponibilidad}
+        >
+          {disponibleParaCompra ? "✅ Disponible para compra" : "❌ No disponible"}
         </Button>
-      </Modal.Footer>
-    </Modal>
-  </div>
-);
+      </div>
+
+      {loading ? (
+        <Spinner animation="border" />
+      ) : modulos.length === 0 ? (
+        <p>No hay módulos aún.</p>
+      ) : (
+        modulos.map(modulo => (
+          <Card key={modulo.id} className="mb-3">
+            <Card.Header onClick={() => toggleModulo(modulo.id)} style={{ cursor: 'pointer' }}>
+              <h5>{modulo.titulo}</h5>
+            </Card.Header>
+            <Collapse in={moduloExpandido === modulo.id}>
+              <div>
+                <Card.Body>
+                  <p>{modulo.descripcion}</p>
+                  <h6>Contenidos:</h6>
+                  {modulo.contenidos.length > 0 ? (
+                    <ul>
+                      {modulo.contenidos.map(cont => (
+                        <li key={cont.id}>
+                          <strong>{cont.tipo.toUpperCase()}</strong>:{" "}
+                          <a href={cont.url} target="_blank" rel="noopener noreferrer">{cont.titulo}</a>
+                          {/* Botones de contenido */}
+                          <Button variant="warning" size="sm" className="ms-2" onClick={() => handleEditarContenido(cont, modulo.id)}>✏️</Button>
+                          <Button variant="danger" size="sm" className="ms-2" onClick={() => handleEliminarContenido(cont.id)}>🗑️</Button>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p>No hay contenidos.</p>
+                  )}
+
+                  <Button size="sm" className="me-2" onClick={() => {
+                    setModuloSeleccionado(modulo.id);
+                    setModoEdicionContenido(false);
+                    setNuevoContenido({ titulo: '', tipo: 'pdf', url: '' });
+                    setShowNuevoContenido(true);
+                  }}>
+                    + Agregar Contenido
+                  </Button>
+
+                  {/* Botones de módulo */}
+                  <Button variant="warning" size="sm" className="me-2" onClick={() => handleEditarModulo(modulo)}>Editar</Button>
+                  <Button variant="danger" size="sm" onClick={() => handleEliminarModulo(modulo.id)}>Eliminar</Button>
+                </Card.Body>
+              </div>
+            </Collapse>
+          </Card>
+        ))
+      )}
+
+      {/* Modal: nuevo módulo */}
+      <Modal show={showNuevoModulo} onHide={() => setShowNuevoModulo(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>{modoEdicionModulo ? "Editar Módulo" : "Nuevo Módulo"}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group>
+              <Form.Label>Título</Form.Label>
+              <Form.Control
+                value={nuevoModulo.titulo}
+                onChange={e => setNuevoModulo({ ...nuevoModulo, titulo: e.target.value })}
+              />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Descripción</Form.Label>
+              <Form.Control
+                as="textarea"
+                value={nuevoModulo.descripcion}
+                onChange={e => setNuevoModulo({ ...nuevoModulo, descripcion: e.target.value })}
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={modoEdicionModulo ? handleActualizarModulo : handleNuevoModulo}>
+            {modoEdicionModulo ? "Actualizar" : "Guardar"}
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* Modal: nuevo contenido */}
+      <Modal show={showNuevoContenido} onHide={() => setShowNuevoContenido(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>{modoEdicionContenido ? "Editar Contenido" : "Nuevo Contenido"}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group>
+              <Form.Label>Título</Form.Label>
+              <Form.Control
+                value={nuevoContenido.titulo}
+                onChange={e => setNuevoContenido({ ...nuevoContenido, titulo: e.target.value })}
+              />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Tipo</Form.Label>
+              <Form.Select
+                value={nuevoContenido.tipo}
+                onChange={e => setNuevoContenido({ ...nuevoContenido, tipo: e.target.value })}
+              >
+                <option value="pdf">PDF</option>
+                <option value="video">Video</option>
+                <option value="enlace">Enlace</option>
+              </Form.Select>
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>URL</Form.Label>
+              <Form.Control
+                value={nuevoContenido.url}
+                onChange={e => setNuevoContenido({ ...nuevoContenido, url: e.target.value })}
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={modoEdicionContenido ? handleActualizarContenido : handleNuevoContenido}>
+            {modoEdicionContenido ? "Actualizar" : "Agregar"}
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </div>
+  );
 }

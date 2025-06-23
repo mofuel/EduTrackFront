@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 // Importamos los componentes de React-Bootstrap
 import { Navbar, Nav, Container, Button, Dropdown } from "react-bootstrap";
+import { FaShoppingCart } from "react-icons/fa";
 import logo from "../assets/logo.png";
 import "./Navbar.css";
 
@@ -81,7 +82,7 @@ export default function AppNavbar() {
     localStorage.removeItem("rol");
     localStorage.removeItem("email");
     localStorage.removeItem("nombre");
-    setNombreUsuario(null); 
+    setNombreUsuario(null);
     navigate("/login");
   };
 
@@ -108,10 +109,10 @@ export default function AppNavbar() {
             {/* Si estás en la Home, hará scroll. Si estás en otra página, navega a la Home. */}
             <Nav.Link
               as={Link}
-              to="/" // Navega a la Home
+              to="/catalogo" // Navega a la Home
               onClick={() => handleScrollToSection('featured-courses')} // ID de la sección de cursos
               // Añade 'active' si quieres resaltarlo cuando estés en la Home
-              className={location.pathname === '/' ? 'active' : ''}
+              className={location.pathname === '/catalogo' ? 'active' : ''}
             >
               Cursos
             </Nav.Link>
@@ -144,6 +145,10 @@ export default function AppNavbar() {
               className={location.pathname === '/' ? 'active' : ''}
             >
               Team-EduTrack
+            </Nav.Link>
+            <Nav.Link as={Link} to="/carrito" className="me-3 d-flex align-items-center">
+              <FaShoppingCart size={20} className="me-1" />
+              <span>Carrito</span>
             </Nav.Link>
 
 

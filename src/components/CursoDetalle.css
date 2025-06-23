@@ -1,0 +1,29 @@
+.detalle-wrapper {
+  background-color: transparent; /* Gris rata claro */
+  min-height: 100vh;
+  padding-top: 90px; /* Asegura espacio para el navbar fijo */
+  padding-bottom: 30px;
+}
+
+
+.curso-detalle-container {
+  background-color: white;
+  border-radius: 16px;
+  padding: 40px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.08);
+}
+
+.curso-side-card {
+  top: 90px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+h1 {
+  font-size: 2.2rem;
+  font-weight: bold;
+}
+
+h5 {
+  font-weight: 600;
+}
