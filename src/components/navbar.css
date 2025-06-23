@@ -193,3 +193,12 @@
         position: relative;
     }
 }
+
+.navbar .fa-shopping-cart {
+  color: white;
+  transition: color 0.3s;
+}
+
+.navbar .fa-shopping-cart:hover {
+  color: #ffc107;
+}

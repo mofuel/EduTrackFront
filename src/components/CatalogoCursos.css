@@ -1,0 +1,12 @@
+.catalogo-container {
+  padding-top: 2rem;
+}
+
+.catalogo-card {
+  transition: transform 0.2s;
+  cursor: pointer;
+}
+
+.catalogo-card:hover {
+  transform: scale(1.02);
+}

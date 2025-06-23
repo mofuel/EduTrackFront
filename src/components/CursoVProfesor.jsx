@@ -20,6 +20,8 @@ export default function CursoVProfesor() {
 
   const [cursoEditando, setCursoEditando] = useState(null);
   const [showEditarModal, setShowEditarModal] = useState(false);
+  const [disponibleParaCompra, setDisponibleParaCompra] = useState(false);
+
 
   const navigate = useNavigate();
 
@@ -367,6 +369,14 @@ export default function CursoVProfesor() {
                               >
                                 Eliminar
                               </Button>
+
+                              <div className="mt-2">
+                                <strong>Estado: </strong>
+                                <span style={{ color: curso.disponibleParaCompra ? 'green' : 'red' }}>
+                                  {curso.disponibleParaCompra ? 'Disponible para compra' : 'No disponible'}
+                                </span>
+                              </div>
+                              
                             </div>
                           </Card.Body>
                         </Card>

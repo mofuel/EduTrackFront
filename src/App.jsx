@@ -25,6 +25,10 @@ import UserManagement from './components/UserManagement';       // El nuevo c
 import CursoVProfesor from './components/CursoVProfesor';
 
 import ModulosCurso from './components/ModulosCurso';
+import CatalogoCursos from './components/CatalogoCursos';
+import CursoDetalle from './components/CursoDetalle';
+import Carrito from './components/Carrito';
+
 
 
 
@@ -98,7 +102,9 @@ function App() {
         <Route path="/profesor/vista-cursos" element={<CursoVProfesor />} />
 
         <Route path="/modulos-curso/:cursoId" element={<ModulosCurso />} />
-
+        <Route path="/catalogo" element={<CatalogoCursos />} />
+        <Route path="/catalogo/curso/:id" element={<CursoDetalle />} />
+        <Route path="/carrito" element={<Carrito />} />
 
         {/* Ruta para la página de Register */}
         {/* Cuando la URL es "/register", solo se renderiza el componente Register */}
