@@ -9,6 +9,8 @@ import './CatalogoCursos.css'; // Puedes crear tus estilos personalizados
 const CatalogoCursos = () => {
   const [cursos, setCursos] = useState([]);
   const navigate = useNavigate();
+  const [comprados, setComprados] = useState([]);
+  const token = localStorage.getItem("jwt");
 
   useEffect(() => {
     fetch("http://localhost:8080/api/cursos/disponibles")
@@ -16,9 +18,35 @@ const CatalogoCursos = () => {
       .then(data => setCursos(data))
       .catch(err => console.error("Error al cargar cursos:", err));
   }, []);
-  const handleAgregarCarrito = async (cursoId) => {
-    const token = localStorage.getItem("jwt");
 
+
+  // Cargar cursos comprados por el usuario si hay token
+  useEffect(() => {
+    if (!token) return;
+
+    try {
+      const decoded = jwtDecode(token);
+      const userId = decoded.userId;
+
+      fetch(`http://localhost:8080/api/cursos-comprados/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then(res => res.json())
+        .then(data => {
+          const idsComprados = data.map(curso => curso.cursoId);
+          setComprados(idsComprados);
+        })
+        .catch(err => console.error("Error al cargar cursos comprados:", err));
+    } catch (error) {
+      console.error("Error al decodificar token:", error);
+    }
+  }, [token]);
+
+
+  // Agregar curso al carrito
+  const handleAgregarCarrito = async (cursoId) => {
     if (!token) {
       Swal.fire({
         icon: 'warning',
@@ -35,9 +63,7 @@ const CatalogoCursos = () => {
       const decoded = jwtDecode(token);
       usuarioId = decoded.userId;
 
-      if (!usuarioId) {
-        throw new Error("Token inválido");
-      }
+      if (!usuarioId) throw new Error("Token inválido");
     } catch (error) {
       Swal.fire({
         icon: 'error',
@@ -120,13 +146,19 @@ const CatalogoCursos = () => {
                       Ver curso
                     </Button>
 
-                    <Button
-                      variant="outline-success"
-                      onClick={() => handleAgregarCarrito(curso.id)}
-                    >
-                      <FaShoppingCart className="me-2" />
-                      Agregar al carrito
-                    </Button>
+                    {comprados.includes(curso.id) ? (
+                      <Button variant="secondary" disabled>
+                        Ya comprado
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="outline-success"
+                        onClick={() => handleAgregarCarrito(curso.id)}
+                      >
+                        <FaShoppingCart className="me-2" />
+                        Agregar al carrito
+                      </Button>
+                    )}
                   </div>
                 </Card.Body>
               </Card>

@@ -1,0 +1,12 @@
+.cursos-estudiante-wrapper {
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+.card-title {
+  font-weight: bold;
+}
+
+.card-text {
+  font-size: 0.95rem;
+}

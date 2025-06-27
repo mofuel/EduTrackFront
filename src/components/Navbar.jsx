@@ -114,7 +114,17 @@ export default function AppNavbar() {
               // Añade 'active' si quieres resaltarlo cuando estés en la Home
               className={location.pathname === '/catalogo' ? 'active' : ''}
             >
-              Cursos
+              Catalogo
+            </Nav.Link>
+
+            {/* Nav.Link para 'Testimonios' (asume que es una sección en tu Home) */}
+            <Nav.Link
+              as={Link}
+              to="/cursosestudiante" // Navega a la Home
+              onClick={() => handleScrollToSection('testimonios')} // ID de la sección de testimonios
+              className={location.pathname === '/cursosestudiante' ? 'active' : ''}
+            >
+              Mis Cursos
             </Nav.Link>
 
             {/* Nav.Link para 'Testimonios' (asume que es una sección en tu Home) */}
@@ -137,15 +147,7 @@ export default function AppNavbar() {
               Nosotros
             </Nav.Link>
 
-            {/* Nav.Link para 'Testimonios' (asume que es una sección en tu Home) */}
-            <Nav.Link
-              as={Link}
-              to="/" // Navega a la Home
-              onClick={() => handleScrollToSection('testimonios')} // ID de la sección de testimonios
-              className={location.pathname === '/' ? 'active' : ''}
-            >
-              Team-EduTrack
-            </Nav.Link>
+          
             <Nav.Link as={Link} to="/carrito" className="me-3 d-flex align-items-center">
               <FaShoppingCart size={20} className="me-1" />
               <span>Carrito</span>

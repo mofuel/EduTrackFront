@@ -33,7 +33,8 @@ export default function CursoVProfesor() {
     objetivos: '',
     incluye: '',
     requisitos: '',
-    imagen: ''
+    imagen: '',
+    disponibleParaCompra: false
   });
 
   useEffect(() => {

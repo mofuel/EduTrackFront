@@ -1,0 +1,81 @@
+.pago-wrapper {
+  padding-top: 50px;
+  min-height: 100vh;
+  background: #f7f9fc;
+}
+
+.pago-container {
+  background: white;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.pago-title {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.pago-form-label {
+  font-weight: 500;
+  color: #555;
+}
+
+.pago-total {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-top: 20px;
+  text-align: right;
+  color: #2e7d32;
+}
+
+.pago-btn {
+  width: 100%;
+  margin-top: 30px;
+  padding: 12px;
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.pago-card {
+  margin-bottom: 20px;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: box-shadow 0.3s ease;
+}
+
+.pago-card:hover {
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+.pago-card img {
+  height: 180px;
+  object-fit: cover;
+  width: 100%;
+}
+
+.pago-card-body {
+  padding: 16px;
+}
+
+.qr-container {
+  text-align: center;
+}
+
+.qr-img {
+  max-width: 200px;
+  margin-bottom: 10px;
+  border-radius: 12px;
+  border: 2px solid #ccc;
+}
+
+.qr-msg {
+  font-size: 0.95rem;
+  color: #555;
+}
