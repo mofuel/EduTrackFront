@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Container, Row, Col, Card, Button } from "react-bootstrap";
+import { Container, Row, Col, Card, Button} from "react-bootstrap";
 import { jwtDecode } from "jwt-decode";
 import Swal from "sweetalert2";
 import "./Carrito.css";
@@ -117,7 +117,9 @@ export default function Carrito() {
 
                         <div className="total-section mt-4 text-end">
                             <h5>Total: S/ {calcularTotal()}</h5>
-                            <Button variant="success">Proceder al pago</Button>
+                            <Button variant="success" onClick={() => window.location.href = "/pago"}>
+                                Proceder al pago
+                            </Button>
                         </div>
                     </>
                 )}

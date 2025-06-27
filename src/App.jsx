@@ -28,8 +28,8 @@ import ModulosCurso from './components/ModulosCurso';
 import CatalogoCursos from './components/CatalogoCursos';
 import CursoDetalle from './components/CursoDetalle';
 import Carrito from './components/Carrito';
-
-
+import Pago from './components/Pago';
+import CursosEstudiante from './components/CursosEstudiante';
 
 
 // Estilos globales y de librerías
@@ -105,6 +105,8 @@ function App() {
         <Route path="/catalogo" element={<CatalogoCursos />} />
         <Route path="/catalogo/curso/:id" element={<CursoDetalle />} />
         <Route path="/carrito" element={<Carrito />} />
+        <Route path="/pago" element={<Pago />} />
+        <Route path="/cursosestudiante" element={<CursosEstudiante />} />
 
         {/* Ruta para la página de Register */}
         {/* Cuando la URL es "/register", solo se renderiza el componente Register */}

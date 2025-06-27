@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Card, Button, Collapse, Modal, Form, Spinner } from 'react-bootstrap';
 import Swal from 'sweetalert2';
+import { jwtDecode } from "jwt-decode";
 
 export default function ModulosCurso() {
   const { cursoId } = useParams();
@@ -23,6 +24,8 @@ export default function ModulosCurso() {
   const [moduloIdEditando, setModuloIdEditando] = useState(null);
   const [contenidoIdEditando, setContenidoIdEditando] = useState(null);
   const [disponibleParaCompra, setDisponibleParaCompra] = useState(false);
+  const [rol, setRol] = useState(null);
+
 
   const fetchModulos = async () => {
     setLoading(true);
@@ -42,6 +45,19 @@ export default function ModulosCurso() {
     }
   };
 
+
+  useEffect(() => {
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        console.log("Token decodificado:", decoded);
+        setRol(decoded.rol || decoded.role || "");
+      } catch (error) {
+        console.error("Token inválido", error);
+      }
+    }
+  }, [token]);
+  const esDocenteOAdmin = rol === "ROLE_docente" || rol === "ROLE_admin";
 
   useEffect(() => {
     fetchModulos();
@@ -275,24 +291,26 @@ export default function ModulosCurso() {
         <h2 className="mb-0">Módulos del Curso</h2>
       </div>
 
-      <div className="d-flex justify-content-between align-items-center mb-3">
-        <Button
-          onClick={() => {
-            setModoEdicionModulo(false);
-            setNuevoModulo({ titulo: '', descripcion: '' });
-            setShowNuevoModulo(true);
-          }}
-        >
-          + Nuevo Módulo
-        </Button>
+      {esDocenteOAdmin && (
+        <div className="d-flex justify-content-between align-items-center mb-3">
+          <Button
+            onClick={() => {
+              setModoEdicionModulo(false);
+              setNuevoModulo({ titulo: '', descripcion: '' });
+              setShowNuevoModulo(true);
+            }}
+          >
+            + Nuevo Módulo
+          </Button>
 
-        <Button
-          variant={disponibleParaCompra ? "success" : "secondary"}
-          onClick={toggleDisponibilidad}
-        >
-          {disponibleParaCompra ? "✅ Disponible para compra" : "❌ No disponible"}
-        </Button>
-      </div>
+          <Button
+            variant={disponibleParaCompra ? "success" : "secondary"}
+            onClick={toggleDisponibilidad}
+          >
+            {disponibleParaCompra ? "✅ Disponible para compra" : "❌ No disponible"}
+          </Button>
+        </div>
+      )}
 
       {loading ? (
         <Spinner animation="border" />
@@ -315,28 +333,52 @@ export default function ModulosCurso() {
                         <li key={cont.id}>
                           <strong>{cont.tipo.toUpperCase()}</strong>:{" "}
                           <a href={cont.url} target="_blank" rel="noopener noreferrer">{cont.titulo}</a>
-                          {/* Botones de contenido */}
-                          <Button variant="warning" size="sm" className="ms-2" onClick={() => handleEditarContenido(cont, modulo.id)}>✏️</Button>
-                          <Button variant="danger" size="sm" className="ms-2" onClick={() => handleEliminarContenido(cont.id)}>🗑️</Button>
+
+                          {/* 👇 Solo docentes/admin pueden ver estos botones */}
+                          {esDocenteOAdmin && (
+                            <>
+                              <Button
+                                variant="warning"
+                                size="sm"
+                                className="ms-2"
+                                onClick={() => handleEditarContenido(cont, modulo.id)}
+                              >
+                                ✏️
+                              </Button>
+                              <Button
+                                variant="danger"
+                                size="sm"
+                                className="ms-2"
+                                onClick={() => handleEliminarContenido(cont.id)}
+                              >
+                                🗑️
+                              </Button>
+                            </>
+                          )}
                         </li>
                       ))}
                     </ul>
+
                   ) : (
                     <p>No hay contenidos.</p>
                   )}
 
-                  <Button size="sm" className="me-2" onClick={() => {
-                    setModuloSeleccionado(modulo.id);
-                    setModoEdicionContenido(false);
-                    setNuevoContenido({ titulo: '', tipo: 'pdf', url: '' });
-                    setShowNuevoContenido(true);
-                  }}>
-                    + Agregar Contenido
-                  </Button>
+                  {esDocenteOAdmin && (
+                    <>
+                      <Button size="sm" className="me-2" onClick={() => {
+                        setModuloSeleccionado(modulo.id);
+                        setModoEdicionContenido(false);
+                        setNuevoContenido({ titulo: '', tipo: 'pdf', url: '' });
+                        setShowNuevoContenido(true);
+                      }}>
+                        + Agregar Contenido
+                      </Button>
 
-                  {/* Botones de módulo */}
-                  <Button variant="warning" size="sm" className="me-2" onClick={() => handleEditarModulo(modulo)}>Editar</Button>
-                  <Button variant="danger" size="sm" onClick={() => handleEliminarModulo(modulo.id)}>Eliminar</Button>
+                      <Button variant="warning" size="sm" className="me-2" onClick={() => handleEditarModulo(modulo)}>Editar</Button>
+                      <Button variant="danger" size="sm" onClick={() => handleEliminarModulo(modulo.id)}>Eliminar</Button>
+                    </>
+                  )}
+
                 </Card.Body>
               </div>
             </Collapse>
