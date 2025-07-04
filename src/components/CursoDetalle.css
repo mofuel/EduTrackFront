@@ -1,29 +1,147 @@
+/* --- Contenedor Principal y Tipografía --- */
 .detalle-wrapper {
-  background-color: transparent; /* Gris rata claro */
+  background-color: #f4f7f9;
   min-height: 100vh;
-  padding-top: 90px; /* Asegura espacio para el navbar fijo */
-  padding-bottom: 30px;
 }
 
-
-.curso-detalle-container {
-  background-color: white;
-  border-radius: 16px;
-  padding: 40px;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.08);
+.curso-main-content {
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 
+.curso-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #2a2f5c;
+  margin-bottom: 0.5rem;
+}
+
+.curso-descripcion {
+  font-size: 1.1rem;
+  color: #545a8b;
+  margin-bottom: 1.5rem;
+}
+
+.docente-info {
+  font-size: 0.9rem;
+  color: #545a8b;
+  background-color: #f4f7f9;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  display: inline-block;
+}
+
+/* --- Tarjetas de Sección (Aprenderás, Requisitos, etc.) --- */
+.section-card {
+  border: 1px solid #e0e4e8;
+  padding: 1.5rem;
+  border-radius: 8px;
+}
+
+/* 👇 CAMBIO DE SELECTOR AQUÍ 👇 */
+.section-title-dc {
+  font-weight: 600;
+  color: #2a2f5c;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #a1a8e0;
+  display: inline-block;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-style: normal;
+}
+
+.section-card p {
+    color: #333;
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+.incluye-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  color: #333;
+}
+
+.incluye-icon {
+  color: #2ea043;
+  font-size: 1.2rem;
+  margin-right: 0.75rem;
+  flex-shrink: 0;
+}
+
+/* --- Tarjeta de Compra (Lateral) --- */
 .curso-side-card {
   top: 90px;
-  border-radius: 12px;
+  border: none !important;
+  border-radius: 12px !important;
   overflow: hidden;
+  box-shadow: 0 8px 30px rgba(42, 47, 92, 0.15) !important;
 }
 
-h1 {
-  font-size: 2.2rem;
-  font-weight: bold;
+.side-card-img {
+  max-height: 200px;
+  object-fit: cover;
 }
 
-h5 {
+.side-card-price {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2a2f5c;
+  margin-bottom: 1rem;
+}
+
+.side-card-meta {
+  margin-top: 1.5rem;
+  font-size: 0.85rem;
+  color: #545a8b;
+}
+.side-card-meta p {
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+}
+.side-card-meta svg {
+  margin-right: 0.5rem;
+}
+
+/* --- Estilos de Botones --- */
+.btn-agregar {
+  background-color: #2ea043 !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 0.8rem 1.2rem !important;
+  font-size: 1rem !important;
+  font-weight: 700;
+  transition: all 0.3s ease;
+}
+.btn-agregar:hover {
+  background-color: #38c153 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(46, 160, 67, 0.3);
+}
+.btn-comprado {
+  background-color: #8c92ca !important;
+  border-color: #8c92ca !important;
+  color: #e4e6fa !important;
   font-weight: 600;
+  border-radius: 8px !important;
+  padding: 0.8rem 1.2rem !important;
+}
+
+
+/* --- Responsividad --- */
+@media (max-width: 767px) {
+  .curso-main-content {
+    padding: 1.5rem;
+  }
+  .curso-title {
+    font-size: 2rem;
+  }
+  .curso-side-card {
+    margin-top: 2rem;
+  }
 }

@@ -1,5 +1,61 @@
 /* src/components/CursoVProfesor.css */
+/* ============================================= */
+/* ESTILOS INDEPENDIENTES PARA LOS MODALES DE CURSO */
+/* ============================================= */
 
+/* Estilos para el contenido del modal */
+.curso-modal-container .modal-content {
+  border-radius: var(--modern-border-radius);
+  border: none;
+  box-shadow: var(--modern-hover-shadow);
+}
+
+/* Estilos para el encabezado */
+.curso-modal-container .modal-header {
+  color: #fff;
+  border-bottom: 2px solid white; /* Tu color primario amarillo como acento */
+}
+
+/* Estilos para el título */
+.curso-modal-container .modal-title {
+  font-weight: 600;
+}
+
+/* Estilos para el botón de cerrar (X) */
+.curso-modal-container .btn-close {
+  filter: invert(1) grayscale(100%) brightness(200%); /* Hace el icono blanco */
+}
+
+/* Estilos para el cuerpo del modal */
+.curso-modal-container .modal-body {
+}
+.curso-modal-container {
+  display: flex !important;
+  align-items: center !important;
+  min-height: calc(100% - 1rem) !important; /* Bootstrap usa este cálculo para el centrado */
+}
+
+/* Ajuste para pantallas pequeñas para que el modal no se pegue al borde superior */
+@media (max-width: 576px) {
+  .curso-modal-container {
+    min-height: calc(100% - 0.5rem) !important;
+  }
+}
+
+/* Estilos para el botón principal dentro del modal */
+.curso-modal-container .btn-primary {
+  background-color: var(--modern-primary); /* Tu color primario amarillo */
+  border-color: var(--modern-primary);
+  color: var(--modern-text-primary); /* Texto oscuro para que contraste */
+  font-weight: bold;
+  padding: 0.75rem 1.5rem;
+}
+
+.curso-modal-container .btn-primary:hover {
+  background-color: var(--modern-primary-hover); /* Tu color de hover azul oscuro */
+  border-color: var(--modern-primary-hover);
+  color: #fff; /* Texto blanco para el hover */
+}
 /* Variables de Color y Estilo Moderno */
 :root {
   --modern-bg: #f8f9fa; /* Fondo general muy claro */
@@ -22,13 +78,13 @@
 .profesor-curso-layout-modern {
   background-color: var(--modern-bg);
   min-height: 100vh;
-  font-family: 'Segoe UI', 'Rubik', Tahoma, Geneva, Verdana, sans-serif; /* Fuente moderna */
+  font-family: "Segoe UI", "Rubik", Tahoma, Geneva, Verdana, sans-serif; /* Fuente moderna */
   color: var(--modern-text-primary);
 }
 
 /* Navbar Modern */
 .profesor-navbar-modern {
-  background-color: #101444; /* Fondo oscuro para el navbar (Cambiado por ti) */
+  background-color: #101444 !important ; /* Fondo oscuro para el navbar (Cambiado por ti) */
   color: #fff;
   padding: 1rem 1.5rem;
   display: flex;
@@ -145,7 +201,8 @@
 
 /* Main Content Modern */
 .profesor-main-content-modern {
-  padding: 2rem;
+  padding-right: 2rem;
+  padding-left: 2rem;
 }
 
 h1 {
@@ -154,7 +211,9 @@ h1 {
   color: var(--modern-text-primary);
 }
 
-h2, h3 { /* Aplicado a h3 en el panel de notificaciones */
+h2,
+h3 {
+  /* Aplicado a h3 en el panel de notificaciones */
   font-size: 1.8rem;
   font-weight: 600;
   color: var(--modern-text-primary);
@@ -172,7 +231,7 @@ h2, h3 { /* Aplicado a h3 en el panel de notificaciones */
 }
 
 .course-card-modern:hover {
-  box-shadow: var(--modern-hover-shadow);
+  box-shadow: 0 0.5rem 1rem rgba(211, 172, 0, 0.343); /* Sombra azul directa */
   transform: translateY(-0.25rem);
 }
 
@@ -233,7 +292,7 @@ h2, h3 { /* Aplicado a h3 en el panel de notificaciones */
 
 .add-course-card-modern:hover {
   background-color: #f0f3f6; /* Ligeramente más oscuro al hover */
-  box-shadow: var(--modern-hover-shadow);
+  box-shadow: 0 0.5rem 1rem rgba(8, 35, 109, 0.3); /* Sombra azul directa */
 }
 
 .add-course-link-modern {
@@ -402,7 +461,8 @@ h2, h3 { /* Aplicado a h3 en el panel de notificaciones */
   h1 {
     font-size: 2rem;
   }
-  h2, h3 {
+  h2,
+  h3 {
     font-size: 1.5rem;
   }
 
@@ -451,5 +511,65 @@ h2, h3 { /* Aplicado a h3 en el panel de notificaciones */
 
   .add-icon-modern {
     font-size: 2rem;
+  }
+}
+
+/* Alineación de botones y estado dentro de la tarjeta */
+.course-card-modern .card-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Distribuye el espacio entre los dos divs principales */
+  height: 100%;
+  /* Puedes ajustar estos paddings si lo necesitas, si no ya los maneja Bootstrap */
+  /* padding-top: 1.25rem; */
+  /* padding-bottom: 1.25rem; */
+}
+
+.course-actions-footer {
+  margin-top: auto; /* Empuja este div al final del espacio disponible en el Card.Body */
+  padding-top: 1rem; /* Espacio superior para separar de la descripción */
+  border-top: 1px dashed var(--modern-border); /* Separador visual */
+}
+
+.course-buttons {
+  display: flex;
+  gap: 0.5rem; /* Espacio entre los botones */
+  margin-bottom: 0.5rem; /* Espacio entre botones y el estado */
+}
+
+.course-status {
+  font-size: 0.9rem;
+  color: var(--modern-text-secondary);
+}
+
+/* Ajustes para botones existentes */
+.course-card-modern .btn {
+  font-size: 0.9rem;
+  padding: 0.6rem 1rem;
+  border-radius: 0.3rem;
+  white-space: nowrap; /* Evita que el texto de los botones se rompa en varias líneas */
+  font-weight: bold; /* <-- Añade esta línea */
+}
+
+.course-card-modern .btn-warning {
+  background-color: var(--modern-primary); /* #ffc400 */
+  border-color: var(--modern-primary);
+  color: var(--modern-text-primary); /* Texto oscuro para el botón amarillo */
+}
+
+.course-card-modern .btn-warning:hover {
+  background-color: var(--modern-primary-hover); /* #08236d */
+  border-color: var(--modern-primary-hover);
+  color: #fff; /* Texto blanco al hover */
+}
+
+/* Responsive adjustments for buttons */
+@media (max-width: 767px) {
+  .course-buttons {
+    flex-direction: column; /* Apila los botones en pantallas pequeñas */
+    gap: 0.75rem;
+  }
+  .course-buttons .btn {
+    width: 100%; /* Asegura que los botones ocupen todo el ancho */
   }
 }

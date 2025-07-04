@@ -4,7 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { FaShoppingCart } from "react-icons/fa";
 import Swal from 'sweetalert2';
 import { jwtDecode } from 'jwt-decode';
-import './CatalogoCursos.css'; // Puedes crear tus estilos personalizados
+import NavbarEstudiante from './navbar-estudiante';
+import './CatalogoCursos.css'; 
 
 const CatalogoCursos = () => {
   const [cursos, setCursos] = useState([]);
@@ -19,11 +20,8 @@ const CatalogoCursos = () => {
       .catch(err => console.error("Error al cargar cursos:", err));
   }, []);
 
-
-  // Cargar cursos comprados por el usuario si hay token
   useEffect(() => {
     if (!token) return;
-
     try {
       const decoded = jwtDecode(token);
       const userId = decoded.userId;
@@ -44,8 +42,6 @@ const CatalogoCursos = () => {
     }
   }, [token]);
 
-
-  // Agregar curso al carrito
   const handleAgregarCarrito = async (cursoId) => {
     if (!token) {
       Swal.fire({
@@ -57,12 +53,10 @@ const CatalogoCursos = () => {
       });
       return;
     }
-
     let usuarioId;
     try {
       const decoded = jwtDecode(token);
       usuarioId = decoded.userId;
-
       if (!usuarioId) throw new Error("Token inválido");
     } catch (error) {
       Swal.fire({
@@ -74,7 +68,6 @@ const CatalogoCursos = () => {
       window.location.href = "/login";
       return;
     }
-
     try {
       const response = await fetch("http://localhost:8080/api/carrito/agregar", {
         method: "POST",
@@ -84,7 +77,6 @@ const CatalogoCursos = () => {
         },
         body: JSON.stringify({ usuarioId, cursoId }),
       });
-
       if (response.ok) {
         Swal.fire({
           icon: "success",
@@ -109,68 +101,78 @@ const CatalogoCursos = () => {
     }
   };
 
-
-
-
-
   return (
-    <Container className="py-5">
-      <h2 className="text-center mb-4">Catálogo de Cursos</h2>
-      <Row>
-        {cursos.length > 0 ? (
-          cursos.map(curso => (
-            <Col key={curso.id} md={6} lg={4} className="mb-4">
-              <Card className="h-100 shadow-sm">
-                <Card.Img
-                  variant="top"
-                  src={curso.imagen || "https://via.placeholder.com/400x200?text=Curso"}
-                  style={{ height: '200px', objectFit: 'cover' }}
-                />
-                <Card.Body>
-                  <Card.Title>{curso.nombre}</Card.Title>
-                  <Card.Text className="text-truncate">
-                    {curso.descripcion}
-                  </Card.Text>
-                  <div className="mb-2">
-                    <strong>Docente:</strong> {curso.docenteNombre}
-                  </div>
-                  <div className="mb-2">
-                    <strong>Precio:</strong> ${curso.precio}
-                  </div>
-
-                  <div className="d-flex justify-content-between mt-3">
-                    <Button
-                      variant="primary"
-                      onClick={() => navigate(`/catalogo/curso/${curso.id}`)}
-                    >
-                      Ver curso
-                    </Button>
-
-                    {comprados.includes(curso.id) ? (
-                      <Button variant="secondary" disabled>
-                        Ya comprado
-                      </Button>
-                    ) : (
-                      <Button
-                        variant="outline-success"
-                        onClick={() => handleAgregarCarrito(curso.id)}
-                      >
-                        <FaShoppingCart className="me-2" />
-                        Agregar al carrito
-                      </Button>
-                    )}
-                  </div>
-                </Card.Body>
-              </Card>
-            </Col>
-          ))
-        ) : (
-          <Col>
-            <p className="text-center">No hay cursos disponibles en este momento.</p>
-          </Col>
-        )}
-      </Row>
-    </Container>
+    <>
+      <NavbarEstudiante /> 
+      <div className="catalogo-background">
+        <Container className="py-5">
+          <h1 className="catalogo-title text-center mb-3">Catálogo de Cursos</h1>
+          <p className="catalogo-subtitle text-center mb-5">
+            Explora nuestra selección de cursos y lleva tus habilidades al siguiente nivel.
+          </p>
+          <Row>
+            {cursos.length > 0 ? (
+              cursos.map(curso => (
+                <Col 
+                  key={curso.id} 
+                  xs={12} sm={6} lg={4}
+                  className="mb-4 d-flex align-items-stretch"
+                >
+                  <Card className="curso-card h-100">
+                    <Card.Img
+                      variant="top"
+                      src={curso.imagen || "https://via.placeholder.com/400x200?text=EduTrack"}
+                      className="curso-card-img"
+                    />
+                    <Card.Body className="d-flex flex-column">
+                      <Card.Title className="curso-card-title">{curso.nombre}</Card.Title>
+                      <Card.Text className="curso-card-text">
+                        {curso.descripcion}
+                      </Card.Text>
+                      <div className="mt-auto"> 
+                        <div className="mb-2 curso-card-docente">
+                          <strong>Docente:</strong> {curso.docenteNombre}
+                        </div>
+                        <div className="mb-3 curso-card-precio">
+                          S/. {curso.precio}
+                        </div>
+                        <div className="d-flex justify-content-between gap-2 mt-3">
+                          <Button
+                            variant="primary"
+                            className="btn-ver-curso"
+                            onClick={() => navigate(`/catalogo/curso/${curso.id}`)}
+                          >
+                            Ver Detalles
+                          </Button>
+                          {comprados.includes(curso.id) ? (
+                            <Button variant="secondary" className="btn-comprado" disabled>
+                              Adquirido
+                            </Button>
+                          ) : (
+                            <Button
+                              variant="outline-success"
+                              className="btn-agregar"
+                              onClick={() => handleAgregarCarrito(curso.id)}
+                            >
+                              <FaShoppingCart className="me-2" />
+                              Agregar
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    </Card.Body>
+                  </Card>
+                </Col>
+              ))
+            ) : (
+              <Col>
+                <p className="text-center text-light">No hay cursos disponibles en este momento.</p>
+              </Col>
+            )}
+          </Row>
+        </Container>
+      </div>
+    </>
   );
 };
 

@@ -1,12 +1,142 @@
-.catalogo-container {
-  padding-top: 2rem;
+.catalogo-background {
+  background-color: #f4f7f9;
+  color: #333;
+  min-height: 100vh;
+  padding-bottom: 2rem;
 }
 
-.catalogo-card {
-  transition: transform 0.2s;
-  cursor: pointer;
+.catalogo-title {
+  font-family: 'Dancing Script', cursive;
+
+  color: #2a2f5c;
+  font-weight: 7000;
+  letter-spacing: 1px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.catalogo-card:hover {
-  transform: scale(1.02);
+.catalogo-subtitle {
+  color: #545a8b;
+  font-size: 1.1rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.curso-card {
+  background-color: #a1a8e0 !important;
+  border: none !important; 
+  border-radius: 15px !important;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+  width: 100%;
+}
+
+.curso-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 10px 25px rgba(42, 47, 92, 0.2);
+}
+
+.curso-card-img {
+  height: 200px;
+  object-fit: cover;
+  opacity: 1;
+  border-radius: 15px 15px 0 0;
+}
+
+.curso-card:hover .curso-card-img {
+  transform: none;
+}
+
+.curso-card-title {
+  color: #2a2f5c !important;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.curso-card-text {
+  color: #ffffff !important;
+  font-weight: 700;
+  font-size: 0.9rem;
+  flex-grow: 1;
+  line-height: 1.5;
+}
+
+.curso-card-docente {
+  color: #111111 !important;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.curso-card-precio {
+  color: #2a2f5c !important;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.btn-ver-curso {
+  background-color: #f7b731 !important;
+  color: #2a2f5c !important;
+  border: none !important;
+  border-radius: 30px !important;
+  padding: 0.6rem 1.2rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  box-shadow: none;
+}
+
+.btn-ver-curso:hover {
+  background-color: #f8c04c !important;
+  transform: scale(1.05);
+  box-shadow: 0 4px 15px rgba(42, 47, 92, 0.15);
+}
+
+.btn-agregar {
+  background-color: #2ea043 !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 30px !important;
+  padding: 0.6rem 1.2rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  transition: all 0.3s ease;
+}
+
+.btn-agregar:hover {
+  background-color: #38c153 !important;
+  transform: scale(1.05);
+  box-shadow: 0 4px 15px rgba(46, 160, 67, 0.3);
+}
+
+.btn-comprado {
+  background-color: #8c92ca !important;
+  border-color: #8c92ca !important;
+  color: #e4e6fa !important;
+  font-weight: 600;
+  border-radius: 30px !important;
+}
+
+@media (max-width: 767.98px) {
+  .catalogo-title {
+    font-size: 1.8rem;
+  }
+  .curso-card-title {
+    font-size: 1.1rem;
+  }
+  .curso-card-precio {
+    font-size: 1.3rem;
+  }
+  .d-flex.justify-content-between.gap-2.mt-3 {
+    flex-wrap: wrap;
+    justify-content: center !important;
+  }
+  .btn-ver-curso, .btn-agregar {
+    flex-grow: 1;
+    min-width: 120px;
+  }
 }

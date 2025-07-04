@@ -37,7 +37,7 @@ body {
   font-family: 'Rubik', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: var(--primary-bg); /* Asegura que el fondo del body es el primario */
+  background-color: #101444 !important; /* Asegura que el fondo del body es el primario */
   color: var(--text-dark); /* ¡Asegura que el color de texto por defecto sea oscuro! */
 }
 
