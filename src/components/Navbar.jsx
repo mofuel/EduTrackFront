@@ -132,7 +132,6 @@ export default function AppNavbar() {
               as={Link}
               to="/" // Navega a la Home
               onClick={() => handleScrollToSection('testimonios')} // ID de la sección de testimonios
-              className={location.pathname === '/' ? 'active' : ''}
             >
               Certificados
             </Nav.Link>
@@ -142,7 +141,6 @@ export default function AppNavbar() {
               as={Link}
               to="/" // Navega a la Home
               onClick={() => handleScrollToSection('testimonios')} // ID de la sección de testimonios
-              className={location.pathname === '/' ? 'active' : ''}
             >
               Nosotros
             </Nav.Link>

@@ -4,7 +4,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Dropdown, Button } from 'react-bootstrap';
 import { FaBars, FaBell, FaUserCircle, FaSignOutAlt } from 'react-icons/fa';
 import EduTrackLogo from '../assets/logo.png';
-import './DashboardNavbar.css';
+import './VProfesorNavbar.css';
 
 export default function DashboardNavbar() {
   const location = useLocation();
@@ -38,7 +38,7 @@ export default function DashboardNavbar() {
     <nav className="profesor-navbar-modern">
       {/* Logo y nombre */}
       <div className="navbar-brand-modern">
-        <Link to="/dashboard-profesor">
+        <Link to="/">
           <img src={EduTrackLogo} alt="EduTrack Logo" className="navbar-logo-image" />
           EduTrack
         </Link>
@@ -51,9 +51,7 @@ export default function DashboardNavbar() {
 
       {/* Enlaces de navegación */}
       <ul className={`navbar-links-modern ${isMobileNavOpen ? 'open' : ''}`}>
-        <li><Link to="/dashboard-profesor" onClick={() => setIsMobileNavOpen(false)}>Inicio</Link></li>
-        <li><Link to="#" onClick={() => setIsMobileNavOpen(false)}>Mis Cursos</Link></li>
-        <li><Link to="#" onClick={() => setIsMobileNavOpen(false)}>Mis Alumnos</Link></li>
+        <li><Link to="/profesor/vista-cursos" onClick={() => setIsMobileNavOpen(false)}>Cursos</Link></li>
         <li><Link to="#" onClick={() => setIsMobileNavOpen(false)}>Mensajes</Link></li>
         <li><Link to="/perfil" onClick={() => setIsMobileNavOpen(false)}>Mi Perfil</Link></li>
       </ul>

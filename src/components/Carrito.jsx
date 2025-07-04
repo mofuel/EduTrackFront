@@ -1,129 +1,205 @@
 import React, { useEffect, useState } from "react";
-import { Container, Row, Col, Card, Button} from "react-bootstrap";
+import { Container, Card, Button } from "react-bootstrap";
 import { jwtDecode } from "jwt-decode";
 import Swal from "sweetalert2";
-import "./Carrito.css";
+import NavbarEstudiante from "./navbar-estudiante";
+import { FaTrashAlt, FaShoppingCart } from "react-icons/fa";
+import { Link } from "react-router-dom";
+
+import "./Carrito.css"; // Asegúrate de que esta importación es correcta
 
 export default function Carrito() {
-    const [items, setItems] = useState([]);
-    const [usuarioId, setUsuarioId] = useState(null);
-    const token = localStorage.getItem("jwt");
+  const [items, setItems] = useState([]);
+  const [usuarioId, setUsuarioId] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const token = localStorage.getItem("jwt");
 
-    // Decodificar JWT y obtener userId
-    useEffect(() => {
-        if (!token) {
-            Swal.fire({
-                icon: "warning",
-                title: "Sesión requerida",
-                text: "Debes iniciar sesión para ver tu carrito.",
-                confirmButtonText: "Iniciar sesión",
-            }).then(() => {
-                window.location.href = "/login";
-            });
-            return;
-        }
+  useEffect(() => {
+    if (!token) {
+      Swal.fire({
+        icon: "warning",
+        title: "Sesión requerida",
+        text: "Debes iniciar sesión para ver tu carrito.",
+        confirmButtonText: "Iniciar sesión",
+      }).then(() => {
+        window.location.href = "/login";
+      });
+      return;
+    }
 
+    try {
+      const decoded = jwtDecode(token);
+      setUsuarioId(decoded.userId);
+    } catch (err) {
+      console.error("Error al decodificar token:", err);
+      Swal.fire({
+        icon: "error",
+        title: "Token inválido",
+        text: "Tu sesión ha expirado o es inválida. Por favor, inicia sesión nuevamente.",
+      }).then(() => {
+        localStorage.clear();
+        window.location.href = "/login";
+      });
+      setError("Sesión inválida o expirada.");
+    }
+  }, [token]);
+
+  useEffect(() => {
+    const fetchCarritoItems = async () => {
+      if (usuarioId) {
+        setLoading(true);
+        setError(null);
         try {
-            const decoded = jwtDecode(token);
-            setUsuarioId(decoded.userId); // Ajusta si tu campo es diferente (ej: id, sub, etc.)
-        } catch (error) {
-            console.error("Error al decodificar token:", error);
-            Swal.fire({
-                icon: "error",
-                title: "Token inválido",
-                text: "Tu sesión ha expirado o es inválida.",
-            });
-        }
-    }, [token]);
-
-    // Cargar items del carrito del usuario
-    useEffect(() => {
-        if (usuarioId) {
-            fetch(`http://localhost:8080/api/carrito/${usuarioId}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            })
-                .then((res) => res.json())
-                .then((data) => setItems(data))
-                .catch((err) => console.error("Error al cargar carrito:", err));
-        }
-    }, [usuarioId, token]);
-
-    // Eliminar curso del carrito
-    const eliminarDelCarrito = (cursoId) => {
-        fetch(`http://localhost:8080/api/carrito/eliminar?cursoId=${cursoId}`, {
-            method: "DELETE",
+          const response = await fetch(`http://localhost:8080/api/carrito/${usuarioId}`, {
             headers: {
-                Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${token}`,
             },
-        })
-            .then((response) => {
-                if (!response.ok) throw new Error("Error en la respuesta del servidor");
+          });
 
-                setItems((prev) => prev.filter((item) => item.cursoId !== cursoId));
+          if (!response.ok) {
+            throw new Error(`Error ${response.status}: No se pudo cargar el carrito.`);
+          }
 
-                Swal.fire({
-                    icon: "success",
-                    title: "Curso eliminado",
-                    text: "El curso fue eliminado del carrito correctamente.",
-                    timer: 2000,
-                    showConfirmButton: false,
-                });
-            })
-            .catch((err) => {
-                console.error("Error al eliminar del carrito:", err);
-                Swal.fire("Error", "No se pudo eliminar el curso del carrito", "error");
-            });
+          const data = await response.json();
+          setItems(data);
+        } catch (err) {
+          console.error("Error al cargar carrito:", err);
+          setError("No se pudieron cargar los cursos de tu carrito. Intenta de nuevo más tarde.");
+        } finally {
+          setLoading(false);
+        }
+      } else if (!token) {
+        setLoading(false);
+      }
     };
 
+    fetchCarritoItems();
+  }, [usuarioId, token]);
 
-    // Calcular total del carrito
-    const calcularTotal = () =>
-        items.reduce((total, item) => total + item.precio, 0).toFixed(2);
+  const eliminarDelCarrito = async (cursoId, cursoNombre) => {
+    const result = await Swal.fire({
+      title: `¿Estás seguro de eliminar "${cursoNombre}"?`,
+      text: "Esta acción no se puede revertir.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#8c92ca",
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+    });
 
-    return (
-        <div className="carrito-wrapper">
-            <Container className="carrito-container">
-                <h2 className="mb-4">Mi Carrito</h2>
+    if (result.isConfirmed) {
+      try {
+        const response = await fetch(`http://localhost:8080/api/carrito/eliminar?cursoId=${cursoId}`, {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-                {items.length === 0 ? (
-                    <p>No tienes cursos en tu carrito.</p>
-                ) : (
-                    <>
-                        <Row>
-                            {items.map((item) => (
-                                <Col md={6} lg={4} key={item.cursoId} className="mb-4">
-                                    <Card className="curso-card">
-                                        <Card.Img
-                                            variant="top"
-                                            src={item.imagen || "https://via.placeholder.com/300x200"}
-                                            className="img-fluid"
-                                        />
-                                        <Card.Body>
-                                            <Card.Title>{item.nombreCurso}</Card.Title>
-                                            <Card.Text>S/ {item.precio.toFixed(2)}</Card.Text>
-                                            <Button
-                                                variant="outline-danger"
-                                                onClick={() => eliminarDelCarrito(item.cursoId)}
-                                            >
-                                                Eliminar
-                                            </Button>
-                                        </Card.Body>
-                                    </Card>
-                                </Col>
-                            ))}
-                        </Row>
+        if (!response.ok) {
+          throw new Error("Error en la respuesta del servidor al eliminar.");
+        }
 
-                        <div className="total-section mt-4 text-end">
-                            <h5>Total: S/ {calcularTotal()}</h5>
-                            <Button variant="success" onClick={() => window.location.href = "/pago"}>
-                                Proceder al pago
-                            </Button>
-                        </div>
-                    </>
-                )}
-            </Container>
-        </div>
-    );
+        setItems((prev) => prev.filter((item) => item.cursoId !== cursoId));
+
+        Swal.fire({
+          icon: "success",
+          title: "Curso eliminado",
+          text: `"${cursoNombre}" fue eliminado del carrito correctamente.`,
+          timer: 2000,
+          showConfirmButton: false,
+        });
+      } catch (err) {
+        console.error("Error al eliminar del carrito:", err);
+        Swal.fire("Error", "No se pudo eliminar el curso del carrito. Intenta de nuevo.", "error");
+      }
+    }
+  };
+
+  const calcularTotal = () =>
+    items.reduce((total, item) => total + item.precio, 0).toFixed(2);
+
+  return (
+    <>
+      <NavbarEstudiante />
+      <div className="carrito-wrapper">
+        <Container className="carrito-content-container py-5">
+          <h2 className="carrito-title text-center mb-5">Tu Carrito de Compras</h2>
+
+          {loading ? (
+            <div className="text-center carrito-loading-message">
+              Cargando cursos en tu carrito...
+            </div>
+          ) : error ? (
+            <div className="text-center carrito-error-message">
+              <p>{error}</p>
+              <Button as={Link} to="/catalogo" variant="primary" className="btn-go-catalog">
+                Ir al Catálogo
+              </Button>
+            </div>
+          ) : items.length === 0 ? (
+            <div className="text-center carrito-empty-message">
+              <FaShoppingCart className="empty-cart-icon mb-3" />
+              <p className="lead mb-4">¡Tu carrito está vacío!</p>
+              <p>Parece que aún no has agregado ningún curso.</p>
+              <Button as={Link} to="/catalogo" variant="primary" className="btn-go-catalog">
+                Explorar Cursos
+              </Button>
+            </div>
+          ) : (
+            <div className="carrito-main">
+              <div className="carrito-items">
+                {items.map((item) => (
+                  <Card key={item.cursoId} className="carrito-item-card mb-3">
+                    <div className="carrito-item-img-container">
+                      <Card.Img
+                        src={item.imagen || "https://via.placeholder.com/150x100?text=Curso"}
+                        alt={item.nombreCurso}
+                      />
+                    </div>
+                    
+                    <div className="carrito-info">
+                      <h5>{item.nombreCurso}</h5>
+                      <p>Dictado por: <strong>{item.docenteNombre}</strong></p>
+                      <p className="precio d-lg-none">S/ {item.precio.toFixed(2)}</p>
+                    </div>
+
+                    <div className="carrito-price-action">
+                      <p className="precio d-none d-lg-block">S/ {item.precio.toFixed(2)}</p>
+                      <Button
+                        variant="danger"
+                        className="btn-eliminar"
+                        onClick={() => eliminarDelCarrito(item.cursoId, item.nombreCurso)}
+                      >
+                        <FaTrashAlt className="me-1" /> Eliminar
+                      </Button>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+
+              <Card className="carrito-summary">
+                <Card.Body>
+                  <h4>Resumen de tu compra</h4>
+                  <div className="d-flex justify-content-between align-items-center mb-3">
+                    <span className="total-label">Total:</span>
+                    <span className="total-price">S/ {calcularTotal()}</span>
+                  </div>
+                  <Button
+                    variant="success"
+                    className="btn-pagar w-100 mt-3"
+                    onClick={() => window.location.href = "/pago"}
+                  >
+                    Proceder al pago
+                  </Button>
+                </Card.Body>
+              </Card>
+            </div>
+          )}
+        </Container>
+      </div>
+    </>
+  );
 }

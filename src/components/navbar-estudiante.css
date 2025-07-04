@@ -1,0 +1,159 @@
+.navbar-estudiante {
+  padding: 0.9rem 1rem;
+  z-index: 1000;
+  position: relative;
+  width: 100%;
+  overflow: visible;
+  background: linear-gradient(to right, #1d2e5f, #1a3674, #010f2e);
+}
+
+.navbar-estudiante::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 1;
+  z-index: -1;
+}
+
+.navbar-estudiante .navbar-brand,
+.navbar-estudiante .navbar-nav .nav-link,
+.navbar-estudiante .custom-btn-login,
+.navbar-estudiante .custom-btn-register {
+  position: relative;
+  z-index: 1;
+}
+
+.navbar-estudiante .navbar-brand {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+  display: flex;
+  align-items: center;
+}
+
+.logo-img {
+  height: 40px;
+  width: auto;
+}
+
+.navbar-estudiante .navbar-nav .nav-link {
+  color: #ffffffa8;
+  margin-right: 1rem;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+.navbar-estudiante .navbar-nav .nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0px;
+  left: 50%;
+  transform: translateX(-50%) scaleX(0);
+  transform-origin: center;
+  width: 60%;
+  height: 2px;
+  background-color: #fff;
+  transition: transform 0.3s ease-in-out !important;
+}
+
+.navbar-estudiante .navbar-nav .nav-link:hover {
+  color: #ffffff;
+}
+
+.navbar-estudiante .navbar-nav .nav-link:hover::after {
+  transform: translateX(-50%) scaleX(1);
+}
+
+/* ESTILO PARA EL ENLACE ACTIVO */
+.navbar-estudiante .navbar-nav .nav-link.active {
+  color: #ffffff !important;
+}
+
+.navbar-estudiante .navbar-nav .nav-link.active::after {
+  transform: translateX(-50%) scaleX(1);
+}
+
+.custom-btn-login {
+  color: white;
+  background-color: transparent !important;
+  border: 1.8px solid white !important;
+  padding: 0.5rem 1.3rem;
+  border-radius: 30px;
+  overflow: hidden;
+  transition: color 0.5s ease-in-out !important;
+  font-weight: bold !important;
+}
+
+.custom-btn-login::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 0%;
+  background-color: white;
+  z-index: -1;
+  transition: width 0.4s ease-in-out;
+}
+
+.custom-btn-login:hover::before {
+  width: 100%;
+}
+
+.custom-btn-login:hover {
+  font-weight: bold;
+  color: #041946 !important;
+}
+
+.custom-btn-register {
+  background-color: white !important;
+  color: #1a3674 !important;
+  border: 1px solid transparent !important;
+  font-weight: bold;
+  padding: 0.5rem 1.3rem;
+  border-radius: 30px;
+  transition: all 0.4s ease-in-out !important ;
+}
+
+.custom-btn-register:hover {
+  background-color: #011849 !important;
+  color: white !important;
+  border: 1px solid white !important;
+  box-shadow: 0 0 7px 3px rgba(255, 255, 255, 0.897);
+}
+
+@media (max-width: 991.98px) {
+  .custom-btn-login,
+  .custom-btn-register {
+    width: 100%;
+    text-align: center;
+  }
+
+  .custom-btn-register {
+    margin-top: 0.5rem;
+  }
+
+  .navbar-collapse {
+    background-color: transparent !important;
+    box-shadow: none;
+    z-index: 999;
+    padding: 1rem;
+  }
+
+  .navbar-toggler {
+    z-index: 1001;
+    position: relative;
+  }
+}
+
+.navbar .fa-shopping-cart {
+  color: white;
+  transition: color 0.3s;
+}
+
+.navbar .fa-shopping-cart:hover {
+  color: #ffc107;
+}

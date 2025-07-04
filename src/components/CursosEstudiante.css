@@ -1,12 +1,52 @@
-.cursos-estudiante-wrapper {
-  background-color: #f8f9fa;
-  min-height: 100vh;
+/* Reutilizamos el fondo y el título del catálogo para consistencia */
+.cursos-estudiante-background {
+    /* Si quieres un fondo ligeramente diferente o ajustes específicos para esta página */
+    background-color: #f4f7f9; /* Puedes ajustar este color si quieres */
+    min-height: 100vh;
+    padding-bottom: 2rem;
 }
 
-.card-title {
-  font-weight: bold;
+/* Las clases .catalogo-title, .catalogo-subtitle,
+   .curso-card, .curso-card:hover, .curso-card-img,
+   .curso-card-title, .curso-card-text, .curso-card-docente,
+   .btn-ver-curso, .btn-ver-curso:hover
+   serán heredadas directamente del CatalogoCursos.css debido a que estás usando las mismas clases.
+   Si necesitas sobrescribir algo para esta vista en particular, hazlo aquí.
+*/
+
+/* Ejemplo de cómo sobrescribir o añadir algo específico si lo necesitaras: */
+/*
+.cursos-estudiante-background .curso-card {
+    background-color: #d1d5ed !important;
+}
+*/
+
+/* Estilo para el texto de "No hay cursos comprados" */
+.text-light { /* Si usas Bootstrap, esto ya debería aplicar el color de texto */
+    color: #545a8b !important; /* Ajustado para que combine con el diseño del subtítulo */
+    font-size: 1.1rem;
+    font-weight: 600;
 }
 
-.card-text {
-  font-size: 0.95rem;
+.text-light a {
+    color: #f7b731 !important; /* Color del botón "Ver Detalles" para el enlace */
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.text-light a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 767.98px) {
+    .cursos-estudiante-background .catalogo-title {
+        font-size: 1.8rem;
+    }
+    .cursos-estudiante-background .curso-card-title {
+        font-size: 1.1rem;
+    }
+    .cursos-estudiante-background .btn-ver-curso {
+        flex-grow: 1;
+        min-width: 120px;
+    }
 }

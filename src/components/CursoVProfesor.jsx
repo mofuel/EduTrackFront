@@ -1,16 +1,34 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { FaUserCircle, FaBell, FaBars, FaSignOutAlt, FaPlusCircle, FaChevronDown, FaChevronUp } from 'react-icons/fa';
-import { Container, Row, Col, Card, Button, Collapse, Modal, Form } from 'react-bootstrap';
-import './CursoVProfesor.css';
-import DashboardNavbar from './DashboardNavbar';
-import CpythonImage from '../assets/Cpython.webp';
-import EduTrackLogo from '../assets/logo.png';
-import { jwtDecode } from 'jwt-decode';
-import Swal from 'sweetalert2';
-import { useNavigate } from 'react-router-dom';
-
-
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import {
+  FaUserCircle,
+  FaBell,
+  FaBars,
+  FaSignOutAlt,
+  FaPlusCircle,
+  FaChevronDown,
+  FaChevronUp,
+  FaCheckCircle,
+  FaTimesCircle,
+} from "react-icons/fa";
+//                                                                                                               ^ ^ ^ ^ ^ Añade estos dos
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Button,
+  Collapse,
+  Modal,
+  Form,
+} from "react-bootstrap";
+import "./CursoVProfesor.css";
+import VProfesorNavbar from "./VProfesorNavbar";
+import CpythonImage from "../assets/Cpython.webp";
+import EduTrackLogo from "../assets/logo.png";
+import { jwtDecode } from "jwt-decode";
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 export default function CursoVProfesor() {
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
@@ -22,19 +40,17 @@ export default function CursoVProfesor() {
   const [showEditarModal, setShowEditarModal] = useState(false);
   const [disponibleParaCompra, setDisponibleParaCompra] = useState(false);
 
-
   const navigate = useNavigate();
 
-
   const [nuevoCurso, setNuevoCurso] = useState({
-    nombre: '',
-    descripcion: '',
-    precio: '',
-    objetivos: '',
-    incluye: '',
-    requisitos: '',
-    imagen: '',
-    disponibleParaCompra: false
+    nombre: "",
+    descripcion: "",
+    precio: "",
+    objetivos: "",
+    incluye: "",
+    requisitos: "",
+    imagen: "",
+    disponibleParaCompra: false,
   });
 
   useEffect(() => {
@@ -46,12 +62,12 @@ export default function CursoVProfesor() {
 
     fetch(`http://localhost:8080/api/cursos/docente/${docenteId}`, {
       headers: {
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     })
-      .then(response => response.json())
-      .then(data => setCursos(data))
-      .catch(error => console.error('Error al cargar cursos:', error));
+      .then((response) => response.json())
+      .then((data) => setCursos(data))
+      .catch((error) => console.error("Error al cargar cursos:", error));
   }, []);
 
   const handleLogout = () => {
@@ -67,17 +83,17 @@ export default function CursoVProfesor() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setNuevoCurso(prev => ({ ...prev, [name]: value }));
+    setNuevoCurso((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmitCurso = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:8080/api/cursos', {
-        method: 'POST',
+      const response = await fetch("http://localhost:8080/api/cursos", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem("jwt")}`
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("jwt")}`,
         },
         body: JSON.stringify(nuevoCurso),
       });
@@ -88,45 +104,49 @@ export default function CursoVProfesor() {
       }
 
       const data = await response.json();
-      setCursos(prev => [...prev, data]);
-      Swal.fire('Curso creado', 'El curso se creó correctamente', 'success');
+      setCursos((prev) => [...prev, data]);
+      Swal.fire("Curso creado", "El curso se creó correctamente", "success");
       handleCloseModal();
     } catch (error) {
-      console.error('Error al guardar curso:', error.message);
-      Swal.fire('Error', 'No se pudo guardar el curso', 'error');
+      console.error("Error al guardar curso:", error.message);
+      Swal.fire("Error", "No se pudo guardar el curso", "error");
     }
   };
 
   const handleEliminarCurso = async (id) => {
     const confirmar = await Swal.fire({
-      title: '¿Eliminar curso?',
-      text: 'Esta acción marcará el curso como inactivo.',
-      icon: 'warning',
+      title: "¿Eliminar curso?",
+      text: "Esta acción marcará el curso como inactivo.",
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonText: 'Sí, eliminar',
-      cancelButtonText: 'Cancelar'
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
     });
 
     if (!confirmar.isConfirmed) return;
 
     try {
       const response = await fetch(`http://localhost:8080/api/cursos/${id}`, {
-        method: 'DELETE',
+        method: "DELETE",
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("jwt")}`
-        }
+          Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+        },
       });
 
       if (response.ok) {
-        setCursos(prev => prev.filter(c => c.id !== id));
-        Swal.fire('Eliminado', 'El curso fue marcado como inactivo.', 'success');
+        setCursos((prev) => prev.filter((c) => c.id !== id));
+        Swal.fire(
+          "Eliminado",
+          "El curso fue marcado como inactivo.",
+          "success"
+        );
       } else {
         const errText = await response.text();
         throw new Error(errText);
       }
     } catch (err) {
       console.error("Error al eliminar curso:", err);
-      Swal.fire('Error', 'No se pudo eliminar el curso.', 'error');
+      Swal.fire("Error", "No se pudo eliminar el curso.", "error");
     }
   };
 
@@ -138,55 +158,78 @@ export default function CursoVProfesor() {
   const handleActualizarCurso = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`http://localhost:8080/api/cursos/${cursoEditando.id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem("jwt")}`
-        },
-        body: JSON.stringify(cursoEditando)
-      });
+      const response = await fetch(
+        `http://localhost:8080/api/cursos/${cursoEditando.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+          },
+          body: JSON.stringify(cursoEditando),
+        }
+      );
 
       if (!response.ok) throw new Error(await response.text());
 
       const actualizado = await response.json();
-      setCursos(prev => prev.map(c => c.id === actualizado.id ? actualizado : c));
-      Swal.fire('Actualizado', 'El curso fue actualizado exitosamente', 'success');
+      setCursos((prev) =>
+        prev.map((c) => (c.id === actualizado.id ? actualizado : c))
+      );
+      Swal.fire(
+        "Actualizado",
+        "El curso fue actualizado exitosamente",
+        "success"
+      );
       setShowEditarModal(false);
     } catch (err) {
       console.error("Error actualizando curso:", err);
-      Swal.fire('Error', 'No se pudo actualizar el curso', 'error');
+      Swal.fire("Error", "No se pudo actualizar el curso", "error");
     }
   };
-
-
-
 
   const notifications = [];
 
   return (
     <div className="profesor-curso-layout-modern">
-      <DashboardNavbar />
+      <VProfesorNavbar />
 
-      <Modal show={showModal} onHide={handleCloseModal}>
-        <Modal.Header closeButton>
+<Modal show={showModal} onHide={handleCloseModal} dialogClassName="curso-modal-container" centered>
+          <Modal.Header closeButton>
           <Modal.Title>Crear Nuevo Curso</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleSubmitCurso}>
             <Form.Group className="mb-3">
               <Form.Label>Nombre del Curso</Form.Label>
-              <Form.Control name="nombre" value={nuevoCurso.nombre} onChange={handleInputChange} required />
+              <Form.Control
+                name="nombre"
+                value={nuevoCurso.nombre}
+                onChange={handleInputChange}
+                required
+              />
             </Form.Group>
 
             <Form.Group className="mb-3">
               <Form.Label>Descripción</Form.Label>
-              <Form.Control as="textarea" name="descripcion" value={nuevoCurso.descripcion} onChange={handleInputChange} required />
+              <Form.Control
+                as="textarea"
+                name="descripcion"
+                value={nuevoCurso.descripcion}
+                onChange={handleInputChange}
+                required
+              />
             </Form.Group>
 
             <Form.Group className="mb-3">
               <Form.Label>Precio</Form.Label>
-              <Form.Control type="number" name="precio" value={nuevoCurso.precio} onChange={handleInputChange} required />
+              <Form.Control
+                type="number"
+                name="precio"
+                value={nuevoCurso.precio}
+                onChange={handleInputChange}
+                required
+              />
             </Form.Group>
 
             <Form.Group className="mb-3">
@@ -233,13 +276,15 @@ export default function CursoVProfesor() {
               />
             </Form.Group>
 
-            <Button variant="primary" type="submit">Guardar Curso</Button>
+            <Button variant="primary" type="submit">
+              Guardar Curso
+            </Button>
           </Form>
         </Modal.Body>
       </Modal>
 
-      <Modal show={showEditarModal} onHide={() => setShowEditarModal(false)}>
-        <Modal.Header closeButton>
+<Modal show={showEditarModal} onHide={() => setShowEditarModal(false)} dialogClassName="curso-modal-container" centered>
+          <Modal.Header closeButton>
           <Modal.Title>Editar Curso</Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -250,7 +295,12 @@ export default function CursoVProfesor() {
                 <Form.Control
                   name="nombre"
                   value={cursoEditando.nombre}
-                  onChange={e => setCursoEditando({ ...cursoEditando, nombre: e.target.value })}
+                  onChange={(e) =>
+                    setCursoEditando({
+                      ...cursoEditando,
+                      nombre: e.target.value,
+                    })
+                  }
                   required
                 />
               </Form.Group>
@@ -260,7 +310,12 @@ export default function CursoVProfesor() {
                   as="textarea"
                   name="descripcion"
                   value={cursoEditando.descripcion}
-                  onChange={e => setCursoEditando({ ...cursoEditando, descripcion: e.target.value })}
+                  onChange={(e) =>
+                    setCursoEditando({
+                      ...cursoEditando,
+                      descripcion: e.target.value,
+                    })
+                  }
                   required
                 />
               </Form.Group>
@@ -270,7 +325,12 @@ export default function CursoVProfesor() {
                   type="number"
                   name="precio"
                   value={cursoEditando.precio}
-                  onChange={e => setCursoEditando({ ...cursoEditando, precio: e.target.value })}
+                  onChange={(e) =>
+                    setCursoEditando({
+                      ...cursoEditando,
+                      precio: e.target.value,
+                    })
+                  }
                   required
                 />
               </Form.Group>
@@ -279,7 +339,12 @@ export default function CursoVProfesor() {
                 <Form.Control
                   name="imagen"
                   value={cursoEditando.imagen}
-                  onChange={e => setCursoEditando({ ...cursoEditando, imagen: e.target.value })}
+                  onChange={(e) =>
+                    setCursoEditando({
+                      ...cursoEditando,
+                      imagen: e.target.value,
+                    })
+                  }
                 />
               </Form.Group>
               <Form.Group className="mb-3">
@@ -287,8 +352,13 @@ export default function CursoVProfesor() {
                 <Form.Control
                   as="textarea"
                   name="objetivos"
-                  value={cursoEditando.objetivos || ''}
-                  onChange={e => setCursoEditando({ ...cursoEditando, objetivos: e.target.value })}
+                  value={cursoEditando.objetivos || ""}
+                  onChange={(e) =>
+                    setCursoEditando({
+                      ...cursoEditando,
+                      objetivos: e.target.value,
+                    })
+                  }
                 />
               </Form.Group>
               <Form.Group className="mb-3">
@@ -296,8 +366,13 @@ export default function CursoVProfesor() {
                 <Form.Control
                   as="textarea"
                   name="incluye"
-                  value={cursoEditando.incluye || ''}
-                  onChange={e => setCursoEditando({ ...cursoEditando, incluye: e.target.value })}
+                  value={cursoEditando.incluye || ""}
+                  onChange={(e) =>
+                    setCursoEditando({
+                      ...cursoEditando,
+                      incluye: e.target.value,
+                    })
+                  }
                 />
               </Form.Group>
               <Form.Group className="mb-3">
@@ -305,16 +380,22 @@ export default function CursoVProfesor() {
                 <Form.Control
                   as="textarea"
                   name="requisitos"
-                  value={cursoEditando.requisitos || ''}
-                  onChange={e => setCursoEditando({ ...cursoEditando, requisitos: e.target.value })}
+                  value={cursoEditando.requisitos || ""}
+                  onChange={(e) =>
+                    setCursoEditando({
+                      ...cursoEditando,
+                      requisitos: e.target.value,
+                    })
+                  }
                 />
               </Form.Group>
-              <Button type="submit" variant="primary">Guardar Cambios</Button>
+              <Button type="submit" variant="primary">
+                Guardar Cambios
+              </Button>
             </Form>
           )}
         </Modal.Body>
       </Modal>
-
 
       <div className="profesor-main-content-modern">
         <Container fluid className="py-4">
@@ -337,60 +418,92 @@ export default function CursoVProfesor() {
                             variant="top"
                             src={curso.imagen || CpythonImage}
                             className="course-image-modern"
-                            style={{ cursor: 'pointer' }}
-                            onClick={() => navigate(`/modulos-curso/${curso.id}`)}
+                            style={{ cursor: "pointer" }}
+                            onClick={() =>
+                              navigate(`/modulos-curso/${curso.id}`)
+                            }
                           />
                           <Card.Body className="d-flex flex-column justify-content-between h-100">
                             <div>
-                              <Card.Title className="course-title-modern">{curso.nombre}</Card.Title>
-                              <Card.Text className="course-description-modern">{curso.descripcion}</Card.Text>
+                              <Card.Title className="course-title-modern">
+                                {curso.nombre}
+                              </Card.Title>
+                              <Card.Text className="course-description-modern">
+                                {curso.descripcion}
+                              </Card.Text>
                               <div className="course-meta-modern">
-                                <span>Precio: ${curso.precio}</span>
+                                <span>
+                                  <strong>Precio: S/.{curso.precio}</strong>
+                                </span>{" "}
                               </div>
                             </div>
 
-                            <div>
-                              <Button
-                                variant="warning"
-                                className="mt-3 me-2"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleEditarCurso(curso);
-                                }}
-                              >
-                                Editar Curso
-                              </Button>
-
-                              <Button
-                                variant="danger"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleEliminarCurso(curso.id);
-                                }}
-                              >
-                                Eliminar
-                              </Button>
-
-                              <div className="mt-2">
+                            <div className="course-actions-footer">
+                              {" "}
+                              {/* Nuevo contenedor para acciones */}
+                              <div className="course-buttons">
+                                {" "}
+                                {/* Contenedor para los botones */}
+                                <Button
+                                  variant="warning"
+                                  className="me-2" // Eliminado 'mt-3' de aquí
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleEditarCurso(curso);
+                                  }}
+                                >
+                                  Editar Curso
+                                </Button>
+                                <Button
+                                  variant="danger"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleEliminarCurso(curso.id);
+                                  }}
+                                >
+                                  Eliminar
+                                </Button>
+                              </div>
+                              <div className="course-status mt-2">
                                 <strong>Estado: </strong>
-                                <span style={{ color: curso.disponibleParaCompra ? 'green' : 'red' }}>
-                                  {curso.disponibleParaCompra ? 'Disponible para compra' : 'No disponible'}
+                                <span
+                                  style={{
+                                    color: curso.disponibleParaCompra
+                                      ? "green"
+                                      : "red",
+                                  }}
+                                >
+                                  {curso.disponibleParaCompra ? (
+                                    <>
+                                      <FaCheckCircle className="me-1" />
+                                      <strong>Disponible para compra</strong>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <FaTimesCircle className="me-1" />
+                                      <strong>No disponible</strong>
+                                    </>
+                                  )}
                                 </span>
                               </div>
-                              
                             </div>
                           </Card.Body>
                         </Card>
                       </Col>
                     ))}
 
-
                     <Col md={6} lg={6} xl={4} className="mb-4">
                       <Card className="add-course-card-modern h-100 d-flex align-items-center justify-content-center">
-                        <div onClick={handleShowModal} className="text-center text-decoration-none add-course-link-modern" style={{ cursor: 'pointer' }}>
+                        <div
+                          onClick={handleShowModal}
+                          className="text-center text-decoration-none add-course-link-modern"
+                          style={{ cursor: "pointer" }}
+                        >
                           <FaPlusCircle className="add-icon-modern mb-2" />
                           <h3>Crear Nuevo Curso</h3>
-                          <p className="text-muted">Comienza a compartir tu conocimiento.</p>
+                          <p className="text-muted">
+                            Comienza a compartir tu conocimiento.
+                          </p>
                         </div>
                       </Card>
                     </Col>
@@ -398,7 +511,11 @@ export default function CursoVProfesor() {
                 ) : (
                   <Col md={6} lg={6} xl={4} className="mb-4">
                     <Card className="add-course-card-modern h-100 d-flex align-items-center justify-content-center">
-                      <div onClick={handleShowModal} className="text-center text-decoration-none add-course-link-modern" style={{ cursor: 'pointer' }}>
+                      <div
+                        onClick={handleShowModal}
+                        className="text-center text-decoration-none add-course-link-modern"
+                        style={{ cursor: "pointer" }}
+                      >
                         <FaPlusCircle className="add-icon-modern mb-2" />
                         <h3>Actualmente no tienes cursos registrados</h3>
                         <p className="text-muted">Haz clic para crear uno.</p>
@@ -418,7 +535,11 @@ export default function CursoVProfesor() {
                   className="notifications-header-toggle"
                 >
                   <h3 className="mb-0">Notificaciones y Recordatorios</h3>
-                  {openNotifications ? <FaChevronUp className="toggle-icon" /> : <FaChevronDown className="toggle-icon" />}
+                  {openNotifications ? (
+                    <FaChevronUp className="toggle-icon" />
+                  ) : (
+                    <FaChevronDown className="toggle-icon" />
+                  )}
                 </Card.Header>
 
                 <Collapse in={openNotifications}>
@@ -427,8 +548,13 @@ export default function CursoVProfesor() {
                       {notifications.length > 0 ? (
                         <ul className="list-unstyled mb-0">
                           {notifications.map((notif) => (
-                            <li key={notif.id} className="notification-item py-2 border-bottom">
-                              <small className="text-muted float-end">{notif.time}</small>
+                            <li
+                              key={notif.id}
+                              className="notification-item py-2 border-bottom"
+                            >
+                              <small className="text-muted float-end">
+                                {notif.time}
+                              </small>
                               {notif.message}
                             </li>
                           ))}
@@ -441,7 +567,9 @@ export default function CursoVProfesor() {
                     </Card.Body>
                     {notifications.length > 0 && (
                       <Card.Footer className="text-center notifications-footer">
-                        <Link to="#" className="text-decoration-none">Ver todas</Link>
+                        <Link to="#" className="text-decoration-none">
+                          Ver todas
+                        </Link>
                       </Card.Footer>
                     )}
                   </div>
