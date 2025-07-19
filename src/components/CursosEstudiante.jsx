@@ -7,6 +7,7 @@ import './CursosEstudiante.css';
 
 export default function CursosEstudiante() {
   const [cursos, setCursos] = useState([]);
+  const [avances, setAvances] = useState([]);
   const token = localStorage.getItem("jwt");
   const [isLoading, setIsLoading] = useState(true); // Estado para controlar la carga
 
@@ -24,59 +25,63 @@ export default function CursosEstudiante() {
       return;
     }
 
-    const fetchCursosComprados = async () => {
-      setIsLoading(true); // Inicia la carga
-      try {
-        const decoded = jwtDecode(token);
-        const usuarioId = decoded.userId;
+    const decoded = jwtDecode(token);
+    const usuarioId = decoded.userId;
 
-        if (!usuarioId) {
-          throw new Error("Token inválido: userId no encontrado");
+    const fetchCursosYAvances = async () => {
+      setIsLoading(true);
+      try {
+        const [cursosResp, avancesResp] = await Promise.all([
+          fetch(`http://localhost:8080/api/cursos-comprados/${usuarioId}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }),
+          fetch(`http://localhost:8080/api/progreso/usuario/${usuarioId}/avance-cursos`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }),
+        ]);
+
+        if (!cursosResp.ok || !avancesResp.ok) {
+          throw new Error("Error al obtener datos.");
         }
 
-        const response = await fetch(`http://localhost:8080/api/cursos-comprados/${usuarioId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+        const cursosData = await cursosResp.json();
+        const avancesData = await avancesResp.json();
+
+        // Asociar porcentaje a cada curso
+        const cursosConAvance = cursosData.map(curso => {
+          const progreso = avancesData.find(p => p.cursoId === curso.id);
+          return {
+            ...curso,
+            porcentajeAvance: progreso ? progreso.porcentajeAvance : 0,
+          };
         });
 
-        
-
-        if (!response.ok) {
-          if (response.status === 401 || response.status === 403) {
-            throw new Error("Acceso no autorizado o token expirado.");
-          }
-          throw new Error("Error al cargar tus cursos.");
-        }
-
-        const data = await response.json();
-        setCursos(data);
+        setCursos(cursosConAvance);
       } catch (error) {
-        console.error("Error al cargar cursos comprados:", error);
+        console.error("Error al cargar cursos o avances:", error);
         Swal.fire({
           icon: 'error',
           title: 'Error',
-          text: error.message || 'No se pudieron cargar tus cursos. Inténtalo de nuevo más tarde.',
-        }).then(() => {
-          if (error.message.includes("expirado") || error.message.includes("inválido")) {
-            localStorage.clear();
-            window.location.href = "/login";
-          }
+          text: error.message || 'No se pudieron cargar tus cursos.',
         });
       } finally {
-        setIsLoading(false); // Finaliza la carga
+        setIsLoading(false);
       }
     };
 
-    fetchCursosComprados();
+    fetchCursosYAvances();
   }, [token]);
 
   return (
     <>
       <NavbarEstudiante />
-      <div className="catalogo-background cursos-estudiante-background"> {/* Reutilizamos la clase de fondo del catálogo y una específica */}
+      <div className="catalogo-background cursos-estudiante-background">
         <Container className="py-5">
-          <h1 className="catalogo-title text-center mb-3">Mis Cursos</h1> {/* Reutilizamos el estilo del título */}
+          <h1 className="catalogo-title text-center mb-3">Mis Cursos</h1>
           <p className="catalogo-subtitle text-center mb-5">
             Aquí encontrarás todos los cursos que has adquirido. ¡Sigue aprendiendo!
           </p>
@@ -84,35 +89,45 @@ export default function CursosEstudiante() {
           {isLoading ? (
             <p className="text-center text-light">Cargando tus cursos...</p>
           ) : cursos.length === 0 ? (
-            <p className="text-center text-light">Aún no has comprado ningún curso. ¡Explora nuestro <a href="/catalogo" className="text-warning">catálogo</a>!</p>
+            <p className="text-center text-light">
+              Aún no has comprado ningún curso. ¡Explora nuestro <a href="/catalogo" className="text-warning">catálogo</a>!
+            </p>
           ) : (
             <Row>
-              {cursos.map((curso) => (
-                <Col
-                  key={curso.id}
-                  xs={12} sm={6} lg={4}
-                  className="mb-4 d-flex align-items-stretch"
-                >
-                  <Card className="curso-card h-100"> {/* Reutilizamos la clase de tarjeta del catálogo */}
+              {cursos.map(curso => (
+                <Col key={curso.id} xs={12} sm={6} lg={4} className="mb-4 d-flex align-items-stretch">
+                  <Card className="curso-card h-100">
                     <Card.Img
                       variant="top"
                       src={curso.imagen || "https://via.placeholder.com/400x200?text=Mi+Curso"}
-                      className="curso-card-img" // Reutilizamos la clase de imagen del catálogo
+                      className="curso-card-img"
                     />
                     <Card.Body className="d-flex flex-column">
-                      <Card.Title className="curso-card-title">{curso.nombreCurso}</Card.Title> {/* Reutilizamos el estilo del título de la tarjeta */}
+                      <Card.Title className="curso-card-title">{curso.nombreCurso}</Card.Title>
                       <Card.Text className="curso-card-text">
                         {curso.descripcion?.length > 150
                           ? `${curso.descripcion.slice(0, 150)}...`
                           : curso.descripcion}
                       </Card.Text>
+
                       <div className="mt-auto">
                         <div className="mb-2 curso-card-docente">
                           <strong>Docente:</strong> {curso.docenteNombre || 'N/A'}
                         </div>
+
+                        {/* Avance */}
+                        <div className="mb-2 curso-card-avance">
+                          <strong>Avance:</strong> {curso.porcentajeAvance?.toFixed(1)}%
+                          <progress
+                            value={curso.porcentajeAvance ?? 0}
+                            max="100"
+                            className="w-100"
+                          ></progress>
+                        </div>
+
                         <Button
                           variant="primary"
-                          className="btn-ver-curso w-100" // Reutilizamos el botón y lo hacemos full width
+                          className="btn-ver-curso w-100"
                           onClick={() => window.location.href = `/modulos-curso/${curso.id}`}
                         >
                           Ir al Curso

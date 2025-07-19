@@ -4,8 +4,10 @@ import { Card, Button, Collapse, Modal, Form, Spinner } from "react-bootstrap";
 import Swal from "sweetalert2";
 import { jwtDecode } from "jwt-decode";
 import VProfesorNavbar from "./VProfesorNavbar";
+import NavbarEstudiante from './navbar-estudiante';
 import styles from "./ModulosCurso.module.css";
 import { FaCheckCircle, FaTimesCircle, FaEdit, FaTrash } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 export default function ModulosCurso() {
   const { cursoId } = useParams();
@@ -13,6 +15,8 @@ export default function ModulosCurso() {
   const [idModuloExpandido, setIdModuloExpandido] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showNuevoModulo, setShowNuevoModulo] = useState(false);
+  const [curso, setCurso] = useState(null);
+  const [avanceCurso, setAvanceCurso] = useState(null);
   const [nuevoModulo, setNuevoModulo] = useState({
     titulo: "",
     descripcion: "",
@@ -26,7 +30,9 @@ export default function ModulosCurso() {
     url: "",
   });
 
-  const token = localStorage.getItem("jwt");
+const token = localStorage.getItem("jwt");
+const decoded = jwtDecode(token);
+const usuarioId = decoded.userId;
 
   const [modoEdicionModulo, setModoEdicionModulo] = useState(false);
   const [modoEdicionContenido, setModoEdicionContenido] = useState(false);
@@ -35,6 +41,7 @@ export default function ModulosCurso() {
   const [disponibleParaCompra, setDisponibleParaCompra] = useState(false);
   const [rol, setRol] = useState(null);
   const [isNavExpanded, setIsNavExpanded] = useState(false);
+  const [contenidosVistos, setContenidosVistos] = useState([]);
 
   const handleLogout = () => {
     localStorage.removeItem("jwt");
@@ -66,17 +73,60 @@ export default function ModulosCurso() {
   };
 
   useEffect(() => {
-    if (token) {
+    const inicializarUsuario = async () => {
+      if (!token) return;
+
       try {
         const decoded = jwtDecode(token);
-        setRol(decoded.rol || decoded.role || "");
+        const rolUsuario = decoded.rol || decoded.role || "";
+        setRol(rolUsuario);
+
+        if (rolUsuario === "ROLE_estudiante") {
+          const usuarioId = decoded.userId;
+
+          // Obtener progreso del usuario
+          const res = await fetch(`http://localhost:8080/api/progreso/usuario/${usuarioId}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          if (res.ok) {
+            const data = await res.json();
+            const idsVistos = data.map((p) => Number(p.contenidoId)); // Asegura que sea number
+            setContenidosVistos(idsVistos);
+          } else {
+            console.error("❌ No se pudo obtener el progreso");
+          }
+
+          // 👉 Obtener curso con porcentaje de avance
+          if (cursoId) {
+            const resCurso = await fetch(`http://localhost:8080/api/certificados/curso/${cursoId}`, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            });
+
+            if (resCurso.ok) {
+              const cursoConProgreso = await resCurso.json();
+              setCurso(cursoConProgreso); // Asegúrate de tener useState para `curso`
+            } else {
+              console.error("❌ No se pudo obtener el curso con progreso");
+            }
+          }
+        }
       } catch (error) {
-        console.error("Token inválido", error);
+        console.error("Error al inicializar usuario:", error);
       }
-    }
-  }, [token]);
+    };
+
+    inicializarUsuario();
+  }, [token, cursoId]);
+
+
 
   const esDocenteOAdmin = rol === "ROLE_docente" || rol === "ROLE_admin";
+  const esEstudiante = rol === "ROLE_estudiante";
 
   useEffect(() => {
     fetchModulos();
@@ -88,6 +138,7 @@ export default function ModulosCurso() {
           },
         });
         const data = await res.json();
+        setCurso(data);
         setDisponibleParaCompra(data.disponibleParaCompra);
       } catch (err) {
         console.error("Error al cargar estado de disponibilidad:", err);
@@ -95,6 +146,12 @@ export default function ModulosCurso() {
     };
     fetchCurso();
   }, [cursoId, token]);
+
+
+
+
+
+
 
   const toggleModuloExpansion = (id) => {
     setIdModuloExpandido((prevId) => (prevId === id ? null : id));
@@ -291,8 +348,7 @@ export default function ModulosCurso() {
         setDisponibleParaCompra(!disponibleParaCompra);
         Swal.fire(
           "Actualizado",
-          `Curso ahora está ${
-            !disponibleParaCompra ? "disponible" : "no disponible"
+          `Curso ahora está ${!disponibleParaCompra ? "disponible" : "no disponible"
           } para compra`,
           "success"
         );
@@ -305,18 +361,194 @@ export default function ModulosCurso() {
     }
   };
 
+  const marcarContenidoVisto = async (contenidoId) => {
+    try {
+      const decoded = jwtDecode(token);
+      const usuarioId = decoded.sub;
+
+      const res = await fetch("http://localhost:8080/api/progreso", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          contenidoId: contenidoId,
+          usuarioId: usuarioId,
+        }),
+      });
+
+      console.log("🔐 Headers:", {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json"
+      });
+
+      if (res.ok) {
+        setContenidosVistos((prev) => {
+          if (!prev.includes(contenidoId)) {
+            return [...prev, contenidoId];
+          }
+          return prev;
+        });
+      } else {
+        console.error("❌ No se pudo registrar el progreso");
+      }
+      const texto = await res.text();
+      console.log("Respuesta del backend:", texto);
+    } catch (error) {
+      console.error("❌ Error al marcar contenido como visto:", error);
+    }
+  };
+
+  const obtenerProgresoUsuario = async () => {
+    if (!token) return;
+
+    try {
+      const decoded = jwtDecode(token);
+      const rolUsuario = decoded.rol || decoded.role || "";
+
+      if (rolUsuario !== "ROLE_estudiante") return;
+
+      const usuarioId = decoded.sub;
+
+      const res = await fetch(
+        `http://localhost:8080/api/progreso/usuario/${usuarioId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (res.ok) {
+        const data = await res.json();
+        const vistos = data.map((prog) => prog.contenidoId);
+        setContenidosVistos(vistos);
+      } else {
+        console.error("❌ No se pudo obtener el progreso");
+      }
+    } catch (error) {
+      console.error("❌ Error al obtener progreso del usuario:", error);
+    }
+  };
+
+  const obtenerCursoConProgreso = async (cursoId) => {
+    try {
+      const res = await fetch(`http://localhost:8080/api/certificados/curso/${cursoId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setCurso(data); // ← Asegúrate de tener useState para curso
+      } else {
+        console.error("❌ No se pudo obtener el curso con progreso");
+      }
+    } catch (err) {
+      console.error("❌ Error al obtener curso con progreso:", err);
+    }
+  };
+  
+
+console.log("🧪 Llamando a API con cursoId:", cursoId, "y usuarioId:", usuarioId);
+
+  useEffect(() => {
+    const obtenerAvanceCurso = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:8080/api/progreso/curso/${cursoId}/usuario/${usuarioId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+        );
+        const data = await response.json();
+        console.log("✅ Avance del curso:", data); // 👈 ESTE IMPRIME EL OBJETO COMPLETO QUE LLEGA DEL BACK
+        setAvanceCurso(data); // Guarda el avance en el estado
+      } catch (error) {
+        console.error("❌ Error al obtener avance del curso:", error);
+      }
+    };
+
+    if (cursoId && usuarioId) {
+      obtenerAvanceCurso();
+    }
+  }, [cursoId, usuarioId]);
+
+useEffect(() => {
+  if (usuarioId && cursoId) {
+    fetch(`http://localhost:8080/api/progreso/curso/${cursoId}/usuario/${usuarioId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Error de autenticación o permisos");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        console.log("✅ Avance del curso:", data);
+        setAvanceCurso(data);
+      })
+      .catch((error) => {
+        console.error("❌ Error al obtener avance:", error.message);
+      });
+  }
+}, [usuarioId, cursoId]);
+
+
+  
+
+
+
+  useEffect(() => {
+    console.log("✅ Avance del curso:", avanceCurso);
+    console.log("🎯 Tipo de avance:", typeof avanceCurso?.porcentajeAvance);
+  }, [avanceCurso]);
+
+
+
   return (
+
     <>
-      <VProfesorNavbar
-        isNavExpanded={isNavExpanded}
-        toggleNav={handleToggleNav}
-        handleLogout={handleLogout}
-        rol={rol}
-      />
+      {rol === "ROLE_estudiante" ? (
+        <NavbarEstudiante />
+      ) : (
+        <VProfesorNavbar
+          isNavExpanded={isNavExpanded}
+          toggleNav={handleToggleNav}
+          handleLogout={handleLogout}
+          rol={rol}
+        />
+      )}
       <div className={`container ${styles["main-content-wrapper"]} mt-4`}>
         <div className="d-flex justify-content-between align-items-center mb-3">
           <h2 className="mb-0">Módulos del Curso</h2>
         </div>
+        {console.log("Curso cargado:", curso)}
+        {/* Mostrar certificado si se completó el curso */}
+        {avanceCurso && avanceCurso.porcentajeAvance === 100 && (
+          <div className="certificado-section mt-3 p-3 bg-success text-white text-center rounded">
+            <h5>🎉 ¡Felicidades! Completaste el curso.</h5>
+            <p>Puedes descargar tu certificado de finalización.</p>
+            <Button
+              variant="light"
+              onClick={() =>
+                window.open(
+                  `http://localhost:8080/api/certificados/generar?cursoId=${curso.id}&usuarioId=${usuarioId}`,
+                  "_blank"
+                )
+              }
+            >
+              Ver certificado
+            </Button>
+          </div>
+        )}
+
 
         {esDocenteOAdmin && (
           <div className="d-flex justify-content-between align-items-center mb-3">
@@ -332,11 +564,10 @@ export default function ModulosCurso() {
             </Button>
 
             <Button
-              className={`${styles.btn} ${
-                disponibleParaCompra
-                  ? styles["btn-success"]
-                  : styles["btn-danger"]
-              }`}
+              className={`${styles.btn} ${disponibleParaCompra
+                ? styles["btn-success"]
+                : styles["btn-danger"]
+                }`}
               onClick={toggleDisponibilidad}
             >
               {disponibleParaCompra ? <FaCheckCircle /> : <FaTimesCircle />}
@@ -355,20 +586,18 @@ export default function ModulosCurso() {
           modulos.map((modulo) => (
             <Card key={modulo.id} className={`${styles.card} mb-3`}>
               <Card.Header
-                className={`${styles["card-header"]} ${
-                  idModuloExpandido === modulo.id
-                    ? styles["header-expanded"]
-                    : ""
-                }`}
+                className={`${styles["card-header"]} ${idModuloExpandido === modulo.id
+                  ? styles["header-expanded"]
+                  : ""
+                  }`}
                 onClick={() => toggleModuloExpansion(modulo.id)}
               >
                 <div className={styles["header-content"]}>
                   <span
-                    className={`${styles["arrow-icon"]} ${
-                      idModuloExpandido === modulo.id
-                        ? styles["arrow-rotated"]
-                        : ""
-                    }`}
+                    className={`${styles["arrow-icon"]} ${idModuloExpandido === modulo.id
+                      ? styles["arrow-rotated"]
+                      : ""
+                      }`}
                   >
                     &#9658;
                   </span>
@@ -387,15 +616,28 @@ export default function ModulosCurso() {
                       <ul className={styles.list}>
                         {modulo.contenidos.map((cont) => (
                           <li key={cont.id} className={styles["list-item"]}>
-                            <div className={styles["content-info"]}>
-                              <strong>{cont.tipo.toUpperCase()}</strong>:{" "}
-                              <a
-                                href={cont.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                              >
-                                {cont.titulo}
-                              </a>
+                            <div className={styles["content-info"]} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                              <div>
+                                <strong>{cont.tipo.toUpperCase()}</strong>:{" "}
+                                <Link
+                                  to={`/contenido/${cont.id}`}
+                                  onClick={() => {
+                                    if (esEstudiante) {
+                                      marcarContenidoVisto(cont.id);
+                                    }
+                                  }}
+                                  className={styles["contenido-link"]}
+                                >
+                                  {cont.titulo}
+                                </Link>
+                              </div>
+
+                              {contenidosVistos.includes(cont.id) && (
+                                <div style={{ color: "green", display: "inline-flex", alignItems: "center" }}>
+                                  <span style={{ marginRight: "6px" }}>Revisado</span>
+                                  <FaCheckCircle />
+                                </div>
+                              )}
                             </div>
 
                             {esDocenteOAdmin && (
