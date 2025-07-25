@@ -36,6 +36,10 @@ export default function ModulosCurso() {
   const [rol, setRol] = useState(null);
   const [isNavExpanded, setIsNavExpanded] = useState(false);
 
+  //AGREGUE 2
+  const [reseña, setReseña] = useState({ comentario: "", estrellas: 5 });
+  const [reseñaGuardada, setReseñaGuardada] = useState(null);
+
   const handleLogout = () => {
     localStorage.removeItem("jwt");
     window.location.href = "/login";
@@ -80,6 +84,7 @@ export default function ModulosCurso() {
 
   useEffect(() => {
     fetchModulos();
+    fetchTodasLasReseñas();
     const fetchCurso = async () => {
       try {
         const res = await fetch(`http://localhost:8080/api/cursos/${cursoId}`, {
@@ -94,11 +99,110 @@ export default function ModulosCurso() {
       }
     };
     fetchCurso();
+
+    //agregue 3
+      const fetchReseña = async () => {
+      try {
+        const res = await fetch(`http://localhost:8080/api/reseñas/curso/${cursoId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setReseñaGuardada(data);
+          setReseña({ comentario: data.comentario, estrellas: data.estrellas });
+        }
+      } catch (err) {
+        console.error("Error al cargar reseña:", err);
+      }
+    };
+
+    fetchReseña();
   }, [cursoId, token]);
 
   const toggleModuloExpansion = (id) => {
     setIdModuloExpandido((prevId) => (prevId === id ? null : id));
   };
+
+
+  //AGREGUE NUEVO 1.1
+  const handleGuardarReseña = async () => {
+  try {
+    const res = await fetch(`http://localhost:8080/api/resenas/${cursoId}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        comentario: reseña.comentario,
+        estrellas: reseña.estrellas
+      }),
+    });
+
+    if (res.ok) {
+      Swal.fire("Guardado", "Reseña guardada correctamente", "success");
+      
+      // ✅ Limpiar formulario
+      setReseña({ comentario: "", estrellas: 5 });
+      
+      // ✅ Recargar las reseñas para mostrar la nueva
+      fetchTodasLasReseñas();
+    } else {
+      const error = await res.text();
+      Swal.fire("Error", error, "error");
+    }
+  } catch (error) {
+    console.error("Error al guardar reseña:", error);
+    Swal.fire("Error", "Error de conexión", "error");
+  }
+};
+
+  // AGREGUE 1.2
+  const [todasLasReseñas, setTodasLasReseñas] = useState([]);
+
+  const fetchTodasLasReseñas = async () => {
+    try {
+    // ✅ CAMBIAR ESTA URL:
+    const res = await fetch(`http://localhost:8080/api/resenas/curso/${cursoId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (res.ok) {
+      const data = await res.json();
+      setTodasLasReseñas(data); // Ya no necesitas filtrar
+    }
+  } catch (err) {
+    console.error("Error al cargar reseñas:", err);
+  }
+  };
+
+
+const handleEliminarReseña = async () => {
+  const confirm = await Swal.fire({
+    title: "¿Eliminar reseña?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Sí",
+  });
+
+  if (confirm.isConfirmed && reseñaGuardada) {
+    const res = await fetch(`http://localhost:8080/api/reseñas/${reseñaGuardada.id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (res.ok) {
+      setReseñaGuardada(null);
+      setReseña({ comentario: "", estrellas: 5 });
+      Swal.fire("Eliminado", "Reseña eliminada", "success");
+    }
+  }
+};
 
   const handleNuevoModulo = async () => {
     if (!cursoId || isNaN(Number(cursoId))) {
@@ -584,6 +688,91 @@ export default function ModulosCurso() {
             </Button>
           </Modal.Footer>
         </Modal>
+        
+        {/* AGREGUE NUEVO RESEÑA */}
+        <div className={`${styles.reseñaContainer || 'reseña-container'} mt-4`}>
+          <h4 className={styles.tituloReseña || ''}>Tu Reseña</h4>
+          <Form>
+            <Form.Group className="mb-3">
+              <Form.Label className={styles.labelReseña || ''}>Comentario</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                value={reseña.comentario}
+                onChange={(e) =>
+                  setReseña({ ...reseña, comentario: e.target.value })
+                }
+                style={{ backgroundColor: '#ffffff', color: '#495057' }}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label className={styles.labelReseña || ''}>Estrellas</Form.Label>
+              <Form.Select
+                value={reseña.estrellas}
+                onChange={(e) =>
+                  setReseña({ ...reseña, estrellas: parseInt(e.target.value) })
+                }
+                style={{ backgroundColor: '#ffffff', color: '#495057' }}
+              >
+                {[5, 4, 3, 2, 1].map((val) => (
+                  <option key={val} value={val}>
+                    {val} ⭐
+                  </option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+            <div className="reseña-btns">
+              <Button
+                variant="primary"
+                onClick={handleGuardarReseña}
+                className={`btn btn-primary ${styles.btn || ''}`}
+              >
+                {reseñaGuardada ? "Actualizar" : "Guardar"}
+              </Button>
+              {reseñaGuardada && (
+                <Button
+                  variant="danger"
+                  onClick={handleEliminarReseña}
+                  className={`btn btn-danger ms-2 ${styles.btn || ''}`}
+                >
+                  Eliminar
+                </Button>
+              )}
+            </div>
+          </Form>
+        </div>
+
+        <div className={`${styles.reseñasExistentes || 'reseñas-existentes'} mt-4`}>
+          <h5 className={styles.tituloReseñasExistentes || ''}>Reseñas del curso</h5>
+          {todasLasReseñas.length === 0 ? (
+            <p style={{ color: '#6c757d' }}>No hay reseñas aún.</p>
+          ) : (
+            todasLasReseñas.map((resenaItem, index) => (
+              <Card key={index} className={`mb-2 ${styles.reseñaCard || ''}`}>
+                <Card.Body>
+                  <div className="d-flex justify-content-between align-items-start">
+                    <strong className={styles.nombreUsuario || ''}>
+                      {resenaItem.usuario?.email || 
+                      resenaItem.usuario?.email || 
+                      resenaItem.usuarios?.nombre || 
+                      resenaItem.usuarios?.email || 
+                      'Anónimo'}
+                    </strong>
+                    <span style={{ color: '#ffc107' }}>
+                      {'⭐'.repeat(resenaItem.estrellas)}
+                    </span>
+                  </div>
+                  <p className={`${styles.textoComentario || ''} mt-2`}>
+                    {resenaItem.comentario}
+                  </p>
+                  <small className={`${styles.fechaReseña || ''} text-muted`}>
+                  </small>
+                </Card.Body>
+              </Card>
+            ))
+          )}
+        </div>
+
       </div>
     </>
   );
