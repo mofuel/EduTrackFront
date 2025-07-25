@@ -258,3 +258,57 @@ background-color: white !important;
     justify-content: flex-end;
   }
 }
+
+.reseñaContainer {
+  background-color: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  margin-top: 20px;
+  border: 1px solid #dee2e6;
+}
+
+.reseñaContainer h4 {
+  color: #343a40 !important;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.reseñaContainer .form-label {
+  color: #495057 !important;
+  font-weight: 500;
+}
+
+.reseñasExistentes {
+  margin-top: 20px;
+}
+
+.reseñasExistentes h5 {
+  color: #343a40 !important;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.reseñaCard {
+  border: 1px solid #dee2e6;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.reseñaCard .card-body {
+  background-color: #ffffff;
+}
+
+.nombreUsuario {
+  color: #007bff !important;
+  font-weight: 500;
+}
+
+.textoComentario {
+  color: #495057 !important;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.fechaReseña {
+  color: #6c757d !important;
+  font-size: 0.875rem;
+}

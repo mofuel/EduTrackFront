@@ -9,6 +9,8 @@ import FeaturedCourses from './components/FeaturedCourses';
 import BenefitCardsSlider from './components/BenefitCardsSlider';
 import Testimonials from './components/Testimonials';
 import Footer from './components/Footer';
+import ResenaForm from './components/ResenaForm';
+
 
 // Componentes de autenticación
 import Login from './components/Login';
@@ -118,6 +120,9 @@ function App() {
 
         {/* NUEVO: Ruta para la página de Cambiar Contraseña */}
         <Route path="/changepassword" element={<ChangePassword />} />
+
+        <Route path="/resena-test" element={<ResenaForm />} />
+
       </Routes>
     </Router>
   );

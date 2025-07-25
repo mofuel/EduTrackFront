@@ -1,0 +1,48 @@
+/* DashboardNavbar.css */
+.profesor-navbar-modern {
+  background-color: #1c1c2b; /* Azul oscuro */
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+
+.navbar-brand-modern img.navbar-logo-image {
+  width: 35px;
+  margin-right: 8px;
+}
+
+.navbar-links-modern {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+}
+
+.navbar-links-modern.open {
+  display: block;
+}
+
+.navbar-user-section-modern {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.user-name-text {
+  font-weight: 500;
+  margin-right: 4px;
+}
+
+.user-avatar-nav-modern {
+  font-size: 1.4rem;
+}
+
+.navbar-icon-modern {
+  font-size: 1.2rem;
+  cursor: pointer;
+}
