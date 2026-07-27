@@ -155,7 +155,7 @@ export default function ModulosCurso() {
     //agregue 3
     const fetchReseña = async () => {
       try {
-        const res = await fetch(`${API_URL}/api/reseñas/curso/${cursoId}`, {
+        const res = await fetch(`${API_URL}/api/resenas/curso/${cursoId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -241,7 +241,7 @@ export default function ModulosCurso() {
     });
 
     if (confirm.isConfirmed && reseñaGuardada) {
-      const res = await fetch(`${API_URL}/api/reseñas/${reseñaGuardada.id}`, {
+      const res = await fetch(`${API_URL}/api/resenas/${reseñaGuardada.id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -927,6 +927,7 @@ export default function ModulosCurso() {
         </Modal>
 
         {/* AGREGUE NUEVO RESEÑA */}
+        {esEstudiante && (
         <div className={`${styles.reseñaContainer || 'reseña-container'} mt-4`}>
           <h4 className={styles.tituloReseña || ''}>Tu Reseña</h4>
           <Form>
@@ -978,6 +979,7 @@ export default function ModulosCurso() {
             </div>
           </Form>
         </div>
+        )}
 
         <div className={`${styles.reseñasExistentes || 'reseñas-existentes'} mt-4`}>
           <h5 className={styles.tituloReseñasExistentes || ''}>Reseñas del curso</h5>

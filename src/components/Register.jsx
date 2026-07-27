@@ -20,8 +20,8 @@ export default function Register() {
   const [rol, setRol] = useState({ value: 'Estudiante', label: 'Estudiante' });
 
   const rolOptions = [
-    { value: 'Estudiante', label: 'Estudiante' },
-    { value: 'Docente', label: 'Docente' },
+    { value: 'ROLE_estudiante', label: 'Estudiante' },
+    { value: 'ROLE_docente', label: 'Docente' },
   ];
 
   const customSelectStyles = {
@@ -141,7 +141,7 @@ export default function Register() {
           Swal.fire({
             icon: 'error',
             title: 'Error al registrar',
-            text: errorData.message || 'Inténtalo de nuevo',
+            text: errorData.mensaje || 'Inténtalo de nuevo',
           });
         } else {
           const text = await response.text();
