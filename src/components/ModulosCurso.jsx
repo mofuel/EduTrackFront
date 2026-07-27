@@ -187,7 +187,7 @@ export default function ModulosCurso() {
   //AGREGUE NUEVO 1.1
   const handleGuardarReseña = async () => {
     try {
-      const res = await fetch("${API_URL}/api/resenas", {
+      const res = await fetch(`${API_URL}/api/resenas`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({ cursoId, comentario: reseña.comentario, estrellas: reseña.estrellas }),
