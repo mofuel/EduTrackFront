@@ -5,8 +5,8 @@ import { FaTimes } from 'react-icons/fa';
 
 export default function AddUserModal({ onClose, onSave }) {
   const [formData, setFormData] = useState({
-    nombre: '',    // <--- ¡CAMBIO AQUÍ!
-    apellido: '',  // <--- ¡CAMBIO AQUÍ!
+    nombre: '',    
+    apellido: '',  
     dni: '',
     email: '',
     telefono: '',

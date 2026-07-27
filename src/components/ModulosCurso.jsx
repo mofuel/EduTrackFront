@@ -30,9 +30,9 @@ export default function ModulosCurso() {
     url: "",
   });
 
-const token = localStorage.getItem("jwt");
-const decoded = jwtDecode(token);
-const usuarioId = decoded.userId;
+  const token = localStorage.getItem("jwt");
+  const decoded = jwtDecode(token);
+  const usuarioId = decoded.userId;
 
   const [modoEdicionModulo, setModoEdicionModulo] = useState(false);
   const [modoEdicionContenido, setModoEdicionContenido] = useState(false);
@@ -152,7 +152,7 @@ const usuarioId = decoded.userId;
     fetchCurso();
 
     //agregue 3
-      const fetchReseña = async () => {
+    const fetchReseña = async () => {
       try {
         const res = await fetch(`http://localhost:8080/api/reseñas/curso/${cursoId}`, {
           headers: {
@@ -185,81 +185,75 @@ const usuarioId = decoded.userId;
 
   //AGREGUE NUEVO 1.1
   const handleGuardarReseña = async () => {
-  try {
-    const res = await fetch(`http://localhost:8080/api/resenas/${cursoId}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        comentario: reseña.comentario,
-        estrellas: reseña.estrellas
-      }),
-    });
+    try {
+      const res = await fetch("http://localhost:8080/api/resenas", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ cursoId, comentario: reseña.comentario, estrellas: reseña.estrellas }),
+      });
 
-    if (res.ok) {
-      Swal.fire("Guardado", "Reseña guardada correctamente", "success");
-      
-      // ✅ Limpiar formulario
-      setReseña({ comentario: "", estrellas: 5 });
-      
-      // ✅ Recargar las reseñas para mostrar la nueva
-      fetchTodasLasReseñas();
-    } else {
-      const error = await res.text();
-      Swal.fire("Error", error, "error");
+      if (res.ok) {
+        Swal.fire("Guardado", "Reseña guardada correctamente", "success");
+
+        // Limpiar formulario
+        setReseña({ comentario: "", estrellas: 5 });
+
+        // Recargar las reseñas para mostrar la nueva
+        fetchTodasLasReseñas();
+      } else {
+        const error = await res.text();
+        Swal.fire("Error", error, "error");
+      }
+    } catch (error) {
+      console.error("Error al guardar reseña:", error);
+      Swal.fire("Error", "Error de conexión", "error");
     }
-  } catch (error) {
-    console.error("Error al guardar reseña:", error);
-    Swal.fire("Error", "Error de conexión", "error");
-  }
-};
+  };
 
   // AGREGUE 1.2
   const [todasLasReseñas, setTodasLasReseñas] = useState([]);
 
   const fetchTodasLasReseñas = async () => {
     try {
-    // ✅ CAMBIAR ESTA URL:
-    const res = await fetch(`http://localhost:8080/api/resenas/curso/${cursoId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    if (res.ok) {
-      const data = await res.json();
-      setTodasLasReseñas(data); // Ya no necesitas filtrar
+      // CAMBIAR ESTA URL:
+      const res = await fetch(`http://localhost:8080/api/resenas/curso/${cursoId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setTodasLasReseñas(data); // Ya no necesitas filtrar
+      }
+    } catch (err) {
+      console.error("Error al cargar reseñas:", err);
     }
-  } catch (err) {
-    console.error("Error al cargar reseñas:", err);
-  }
   };
 
 
-const handleEliminarReseña = async () => {
-  const confirm = await Swal.fire({
-    title: "¿Eliminar reseña?",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonText: "Sí",
-  });
-
-  if (confirm.isConfirmed && reseñaGuardada) {
-    const res = await fetch(`http://localhost:8080/api/reseñas/${reseñaGuardada.id}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+  const handleEliminarReseña = async () => {
+    const confirm = await Swal.fire({
+      title: "¿Eliminar reseña?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí",
     });
 
-    if (res.ok) {
-      setReseñaGuardada(null);
-      setReseña({ comentario: "", estrellas: 5 });
-      Swal.fire("Eliminado", "Reseña eliminada", "success");
+    if (confirm.isConfirmed && reseñaGuardada) {
+      const res = await fetch(`http://localhost:8080/api/reseñas/${reseñaGuardada.id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (res.ok) {
+        setReseñaGuardada(null);
+        setReseña({ comentario: "", estrellas: 5 });
+        Swal.fire("Eliminado", "Reseña eliminada", "success");
+      }
     }
-  }
-};
+  };
 
   const handleNuevoModulo = async () => {
     if (!cursoId || isNaN(Number(cursoId))) {
@@ -554,9 +548,9 @@ const handleEliminarReseña = async () => {
       console.error("❌ Error al obtener curso con progreso:", err);
     }
   };
-  
 
-console.log("🧪 Llamando a API con cursoId:", cursoId, "y usuarioId:", usuarioId);
+
+  console.log("🧪 Llamando a API con cursoId:", cursoId, "y usuarioId:", usuarioId);
 
   useEffect(() => {
     const obtenerAvanceCurso = async () => {
@@ -581,31 +575,31 @@ console.log("🧪 Llamando a API con cursoId:", cursoId, "y usuarioId:", usuario
     }
   }, [cursoId, usuarioId]);
 
-useEffect(() => {
-  if (usuarioId && cursoId) {
-    fetch(`http://localhost:8080/api/progreso/curso/${cursoId}/usuario/${usuarioId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error("Error de autenticación o permisos");
-        }
-        return res.json();
+  useEffect(() => {
+    if (usuarioId && cursoId) {
+      fetch(`http://localhost:8080/api/progreso/curso/${cursoId}/usuario/${usuarioId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       })
-      .then((data) => {
-        console.log("✅ Avance del curso:", data);
-        setAvanceCurso(data);
-      })
-      .catch((error) => {
-        console.error("❌ Error al obtener avance:", error.message);
-      });
-  }
-}, [usuarioId, cursoId]);
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error("Error de autenticación o permisos");
+          }
+          return res.json();
+        })
+        .then((data) => {
+          console.log("✅ Avance del curso:", data);
+          setAvanceCurso(data);
+        })
+        .catch((error) => {
+          console.error("❌ Error al obtener avance:", error.message);
+        });
+    }
+  }, [usuarioId, cursoId]);
 
 
-  
+
 
 
 
@@ -930,7 +924,7 @@ useEffect(() => {
             </Button>
           </Modal.Footer>
         </Modal>
-        
+
         {/* AGREGUE NUEVO RESEÑA */}
         <div className={`${styles.reseñaContainer || 'reseña-container'} mt-4`}>
           <h4 className={styles.tituloReseña || ''}>Tu Reseña</h4>
@@ -994,11 +988,11 @@ useEffect(() => {
                 <Card.Body>
                   <div className="d-flex justify-content-between align-items-start">
                     <strong className={styles.nombreUsuario || ''}>
-                      {resenaItem.usuario?.email || 
-                      resenaItem.usuario?.email || 
-                      resenaItem.usuarios?.nombre || 
-                      resenaItem.usuarios?.email || 
-                      'Anónimo'}
+                      {resenaItem.usuario?.email ||
+                        resenaItem.usuario?.email ||
+                        resenaItem.usuarios?.nombre ||
+                        resenaItem.usuarios?.email ||
+                        'Anónimo'}
                     </strong>
                     <span style={{ color: '#ffc107' }}>
                       {'⭐'.repeat(resenaItem.estrellas)}

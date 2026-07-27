@@ -34,7 +34,7 @@ export default function UserManagement() {
     try {
       const response = await fetch('http://localhost:8080/dash/usuarios');
       const data = await response.json();
-      setUsers(data);
+      setUsers(data.content || data);
     } catch (error) {
       console.error('Error al obtener usuarios:', error);
     }

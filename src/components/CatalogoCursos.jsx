@@ -16,7 +16,7 @@ const CatalogoCursos = () => {
   useEffect(() => {
     fetch("http://localhost:8080/api/cursos/disponibles")
       .then(res => res.json())
-      .then(data => setCursos(data))
+      .then(data => setCursos(data.content || data))
       .catch(err => console.error("Error al cargar cursos:", err));
   }, []);
 
