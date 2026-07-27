@@ -29,6 +29,7 @@ import EduTrackLogo from "../assets/logo.png";
 import { jwtDecode } from "jwt-decode";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import { API_URL } from "../config";
 
 export default function CursoVProfesor() {
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
@@ -60,7 +61,7 @@ export default function CursoVProfesor() {
     const decoded = jwtDecode(token);
     const docenteId = decoded.userId; // El campo depende de cómo esté tu JWT, podría ser decoded.id también
 
-    fetch(`http://localhost:8080/api/cursos/docente/${docenteId}`, {
+    fetch(`${API_URL}/api/cursos/docente/${docenteId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -89,7 +90,7 @@ export default function CursoVProfesor() {
   const handleSubmitCurso = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:8080/api/cursos", {
+      const response = await fetch(`${API_URL}/api/cursos`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -126,7 +127,7 @@ export default function CursoVProfesor() {
     if (!confirmar.isConfirmed) return;
 
     try {
-      const response = await fetch(`http://localhost:8080/api/cursos/${id}`, {
+      const response = await fetch(`${API_URL}/api/cursos/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("jwt")}`,
@@ -159,7 +160,7 @@ export default function CursoVProfesor() {
     e.preventDefault();
     try {
       const response = await fetch(
-        `http://localhost:8080/api/cursos/${cursoEditando.id}`,
+        `${API_URL}/api/cursos/${cursoEditando.id}`,
         {
           method: "PUT",
           headers: {

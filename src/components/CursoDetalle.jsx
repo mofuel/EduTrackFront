@@ -6,6 +6,7 @@ import { jwtDecode } from "jwt-decode";
 import { FaCheckCircle, FaInfinity, FaCertificate } from "react-icons/fa";
 import NavbarEstudiante from "./navbar-estudiante";
 import "./CursoDetalle.css";
+import { API_URL } from "../config";
 
 export default function CursoDetalle() {
   const { id } = useParams();
@@ -16,7 +17,7 @@ export default function CursoDetalle() {
 
   // ... (toda tu lógica de useEffects y handleAgregarAlCarrito se queda igual)
   useEffect(() => {
-    fetch(`http://localhost:8080/api/cursos/${id}`)
+    fetch(`${API_URL}/api/cursos/${id}`)
       .then((res) => {
         if (!res.ok) throw new Error("Curso no encontrado");
         return res.json();
@@ -32,7 +33,7 @@ export default function CursoDetalle() {
       const uid = decoded.userId;
       setUsuarioId(uid);
 
-      fetch(`http://localhost:8080/api/cursos-comprados/existe?usuarioId=${uid}&cursoId=${id}`, {
+      fetch(`${API_URL}/api/cursos-comprados/existe?usuarioId=${uid}&cursoId=${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
         .then((res) => res.json())
@@ -56,7 +57,7 @@ export default function CursoDetalle() {
       }
   
       try {
-        const response = await fetch("http://localhost:8080/api/carrito/agregar", {
+        const response = await fetch(`${API_URL}/api/carrito/agregar`,  {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

@@ -1,4 +1,3 @@
-// src/components/UserManagement.jsx
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
@@ -7,6 +6,7 @@ import {
 } from 'react-icons/fa';
 import logo from '../assets/logo.png';
 import Swal from 'sweetalert2';
+import { API_URL } from "../config";
 
 import AddUserModal from './AddUserModal';
 import EditUserModal from './EditUserModal';
@@ -32,7 +32,7 @@ export default function UserManagement() {
   // Obtener usuarios desde el backend
   const fetchUsers = async () => {
     try {
-      const response = await fetch('http://localhost:8080/dash/usuarios');
+      const response = await fetch(`${API_URL}/dash/usuarios`);
       const data = await response.json();
       setUsers(data.content || data);
     } catch (error) {
@@ -74,7 +74,7 @@ export default function UserManagement() {
 
     if (result.isConfirmed) {
       try {
-        const response = await fetch(`http://localhost:8080/dash/usuarios/eliminar/${userId}`, {
+        const response = await fetch(`${API_URL}/dash/usuarios/eliminar/${userId}`, {
           method: 'DELETE',
           credentials: 'include'
         });
@@ -122,7 +122,7 @@ export default function UserManagement() {
     }
 
     try {
-      const response = await fetch('http://localhost:8080/api/usuarios/registro', {
+      const response = await fetch(`${API_URL}/api/usuarios/registro`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -171,7 +171,7 @@ export default function UserManagement() {
 
   const handleUpdateUser = async (updatedUserData) => {
     try {
-      const response = await fetch(`http://localhost:8080/dash/usuarios/actualizar/${updatedUserData.id}`, {
+      const response = await fetch(`${API_URL}/dash/usuarios/actualizar/${updatedUserData.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'

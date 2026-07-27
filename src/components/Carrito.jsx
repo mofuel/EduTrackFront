@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 import NavbarEstudiante from "./navbar-estudiante";
 import { FaTrashAlt, FaShoppingCart } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { API_URL } from "../config";
 
 import "./Carrito.css"; // Asegúrate de que esta importación es correcta
 
@@ -51,7 +52,7 @@ export default function Carrito() {
         setLoading(true);
         setError(null);
         try {
-          const response = await fetch(`http://localhost:8080/api/carrito/${usuarioId}`, {
+          const response = await fetch(`${API_URL}/api/carrito/${usuarioId}`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -91,7 +92,7 @@ export default function Carrito() {
 
     if (result.isConfirmed) {
       try {
-        const response = await fetch(`http://localhost:8080/api/carrito/eliminar?cursoId=${cursoId}`, {
+        const response = await fetch(`${API_URL}/api/carrito/eliminar?cursoId=${cursoId}`, {
           method: "DELETE",
           headers: {
             Authorization: `Bearer ${token}`,

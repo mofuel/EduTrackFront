@@ -5,6 +5,7 @@ import { FaUser, FaEnvelope, FaLock, FaPhone, FaIdCard, FaBuilding, FaHome } fro
 import './Register.css';
 import { PiX } from 'react-icons/pi';
 import Swal from 'sweetalert2';
+import { API_URL } from "../config";
 
 export default function Register() {
   const navigate = useNavigate(); // Para redireccionar después del registro
@@ -116,7 +117,7 @@ export default function Register() {
     };
 
     try {
-      const response = await fetch('http://localhost:8080/api/usuarios/registro', {
+      const response = await fetch(`${API_URL}/api/usuarios/registro`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

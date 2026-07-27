@@ -3,7 +3,7 @@ import { Container, Form, Button, Row, Col, Card } from "react-bootstrap";
 import { useNavigate, Link } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import Swal from "sweetalert2";
-
+import { API_URL } from "../config";
 import NavbarEstudiante from "./navbar-estudiante"; // Asegúrate de que la ruta sea correcta
 import qrYape from '../assets/qr-yape.png';
 import qrPlin from '../assets/qr-plin.png';
@@ -60,7 +60,7 @@ export default function Pago() {
       if (usuarioId) {
         setLoadingCarrito(true);
         try {
-          const response = await fetch(`http://localhost:8080/api/carrito/${usuarioId}`, {
+          const response = await fetch(`${API_URL}/api/carrito/${usuarioId}`, {
             headers: { Authorization: `Bearer ${token}` },
           });
 
@@ -126,7 +126,7 @@ export default function Pago() {
 
     try {
       for (const item of carrito) {
-        await fetch("http://localhost:8080/api/pagos/registrar", {
+        await fetch(`${API_URL}/api/pagos/registrar`,  {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

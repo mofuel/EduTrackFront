@@ -4,6 +4,7 @@ import { jwtDecode } from "jwt-decode";
 import Swal from "sweetalert2";
 import NavbarEstudiante from './navbar-estudiante'; // Asegúrate de que la ruta sea correcta
 import './CursosEstudiante.css';
+import { API_URL } from "../config";
 
 export default function CursosEstudiante() {
   const [cursos, setCursos] = useState([]);
@@ -32,12 +33,12 @@ export default function CursosEstudiante() {
       setIsLoading(true);
       try {
         const [cursosResp, avancesResp] = await Promise.all([
-          fetch(`http://localhost:8080/api/cursos-comprados/${usuarioId}`, {
+          fetch(`${API_URL}/api/cursos-comprados/${usuarioId}`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }),
-          fetch(`http://localhost:8080/api/progreso/usuario/${usuarioId}/avance-cursos`, {
+          fetch(`${API_URL}/api/progreso/usuario/${usuarioId}/avance-cursos`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },

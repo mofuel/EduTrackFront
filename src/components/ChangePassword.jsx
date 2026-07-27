@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom'; // Importa useNavigate y useLocation
 import { FaLock, FaHome } from 'react-icons/fa'; // Iconos
 import Swal from 'sweetalert2';
-
+import { API_URL } from "../config";
 import './ChangePassword.css'; // Su propio CSS
 
 export default function ChangePassword() {
@@ -50,7 +50,7 @@ export default function ChangePassword() {
 
     try {
       // Aquí iría la petición al backend para cambiar la contraseña, por ejemplo:
-      // const response = await fetch(`http://localhost:8080/auth/cambiar-password?token=${token}`, {
+      // const response = await fetch(`${API_URL}/auth/cambiar-password?token=${token}`, {
       //   method: 'POST',
       //   headers: { 'Content-Type': 'application/json' },
       //   body: JSON.stringify({ nuevaPassword: newPassword }),

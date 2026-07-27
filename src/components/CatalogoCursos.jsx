@@ -5,7 +5,9 @@ import { FaShoppingCart } from "react-icons/fa";
 import Swal from 'sweetalert2';
 import { jwtDecode } from 'jwt-decode';
 import NavbarEstudiante from './navbar-estudiante';
-import './CatalogoCursos.css'; 
+import './CatalogoCursos.css';
+import { API_URL } from "../config";
+
 
 const CatalogoCursos = () => {
   const [cursos, setCursos] = useState([]);
@@ -14,7 +16,7 @@ const CatalogoCursos = () => {
   const token = localStorage.getItem("jwt");
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/cursos/disponibles")
+    fetch(`${API_URL}/api/cursos/disponibles`)
       .then(res => res.json())
       .then(data => setCursos(data.content || data))
       .catch(err => console.error("Error al cargar cursos:", err));
@@ -26,7 +28,7 @@ const CatalogoCursos = () => {
       const decoded = jwtDecode(token);
       const userId = decoded.userId;
 
-      fetch(`http://localhost:8080/api/cursos-comprados/${userId}`, {
+      fetch(`${API_URL}/api/cursos-comprados/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -69,7 +71,7 @@ const CatalogoCursos = () => {
       return;
     }
     try {
-      const response = await fetch("http://localhost:8080/api/carrito/agregar", {
+      const response = await fetch(`${API_URL}/api/carrito/agregar`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

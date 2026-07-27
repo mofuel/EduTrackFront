@@ -4,6 +4,7 @@ import { FaUser, FaLock, FaHome } from 'react-icons/fa';
 import { IoCloseSharp } from 'react-icons/io5';
 import Swal from 'sweetalert2';
 import './Login.css';
+import { API_URL } from "../config";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -46,7 +47,7 @@ export default function Login() {
     const credentials = { email, password };
 
     try {
-      const response = await fetch("http://localhost:8080/auth/login", {
+      const response = await fetch(`${API_URL}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(credentials),
@@ -101,7 +102,7 @@ export default function Login() {
     if (cooldown > 0) return;
 
     try {
-      const res = await fetch('http://localhost:8080/auth/recuperar', {
+      const res = await fetch(`${API_URL}/auth/recuperar`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({ email: emailForRecovery }),
@@ -154,7 +155,7 @@ export default function Login() {
     const fullToken = `${tokenLetter.toUpperCase()}-${tokenNumber}`;
 
     try {
-      const res = await fetch(`http://localhost:8080/auth/verificar?token=${encodeURIComponent(fullToken)}`);
+      const res = await fetch(`${API_URL}/auth/verificar?token=${encodeURIComponent(fullToken)}`);
 
       if (res.ok) {
         // Mostrar confirmación antes de redirigir

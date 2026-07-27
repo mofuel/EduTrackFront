@@ -6,6 +6,7 @@ import { FaBars, FaBell, FaUserCircle, FaSignOutAlt } from 'react-icons/fa';
 import EduTrackLogo from '../assets/logo.png';
 import './DashboardNavbar.css';
 
+
 export default function DashboardNavbar() {
   const location = useLocation();
   const navigate = useNavigate();

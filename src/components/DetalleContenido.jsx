@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Spinner, Button, Card, Alert } from "react-bootstrap";
-
+import { API_URL } from "../config";
 
 
 export default function DetalleContenido() {
@@ -15,7 +15,7 @@ export default function DetalleContenido() {
   useEffect(() => {
     const fetchContenido = async () => {
       try {
-        const res = await fetch(`http://localhost:8080/api/contenidos/${contenidoId}`, {
+        const res = await fetch(`${API_URL}/api/contenidos/${contenidoId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         const data = await res.json();

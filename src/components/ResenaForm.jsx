@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { API_URL } from "../config";
 
 function ResenaForm() {
   const [comentario, setComentario] = useState('');
@@ -18,7 +19,7 @@ function ResenaForm() {
     };
 
     try {
-      const response = await fetch('http://localhost:8080/api/resenas', {
+      const response = await fetch(`${API_URL}/api/resenas`,  {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

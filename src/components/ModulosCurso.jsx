@@ -8,6 +8,7 @@ import NavbarEstudiante from './navbar-estudiante';
 import styles from "./ModulosCurso.module.css";
 import { FaCheckCircle, FaTimesCircle, FaEdit, FaTrash } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { API_URL } from "../config";
 
 export default function ModulosCurso() {
   const { cursoId } = useParams();
@@ -60,7 +61,7 @@ export default function ModulosCurso() {
     setLoading(true);
     try {
       const res = await fetch(
-        `http://localhost:8080/api/modulos/curso/${cursoId}`,
+        `${API_URL}/api/modulos/curso/${cursoId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -89,7 +90,7 @@ export default function ModulosCurso() {
           const usuarioId = decoded.userId;
 
           // Obtener progreso del usuario
-          const res = await fetch(`http://localhost:8080/api/progreso/usuario/${usuarioId}`, {
+          const res = await fetch(`${API_URL}/api/progreso/usuario/${usuarioId}`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -100,12 +101,12 @@ export default function ModulosCurso() {
             const idsVistos = data.map((p) => Number(p.contenidoId)); // Asegura que sea number
             setContenidosVistos(idsVistos);
           } else {
-            console.error("❌ No se pudo obtener el progreso");
+            console.error("No se pudo obtener el progreso");
           }
 
-          // 👉 Obtener curso con porcentaje de avance
+          // Obtener curso con porcentaje de avance
           if (cursoId) {
-            const resCurso = await fetch(`http://localhost:8080/api/certificados/curso/${cursoId}`, {
+            const resCurso = await fetch(`${API_URL}/api/certificados/curso/${cursoId}`, {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
@@ -115,7 +116,7 @@ export default function ModulosCurso() {
               const cursoConProgreso = await resCurso.json();
               setCurso(cursoConProgreso); // Asegúrate de tener useState para `curso`
             } else {
-              console.error("❌ No se pudo obtener el curso con progreso");
+              console.error("No se pudo obtener el curso con progreso");
             }
           }
         }
@@ -137,7 +138,7 @@ export default function ModulosCurso() {
     fetchTodasLasReseñas();
     const fetchCurso = async () => {
       try {
-        const res = await fetch(`http://localhost:8080/api/cursos/${cursoId}`, {
+        const res = await fetch(`${API_URL}/api/cursos/${cursoId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -154,7 +155,7 @@ export default function ModulosCurso() {
     //agregue 3
     const fetchReseña = async () => {
       try {
-        const res = await fetch(`http://localhost:8080/api/reseñas/curso/${cursoId}`, {
+        const res = await fetch(`${API_URL}/api/reseñas/curso/${cursoId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -186,7 +187,7 @@ export default function ModulosCurso() {
   //AGREGUE NUEVO 1.1
   const handleGuardarReseña = async () => {
     try {
-      const res = await fetch("http://localhost:8080/api/resenas", {
+      const res = await fetch("${API_URL}/api/resenas", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({ cursoId, comentario: reseña.comentario, estrellas: reseña.estrellas }),
@@ -216,7 +217,7 @@ export default function ModulosCurso() {
   const fetchTodasLasReseñas = async () => {
     try {
       // CAMBIAR ESTA URL:
-      const res = await fetch(`http://localhost:8080/api/resenas/curso/${cursoId}`, {
+      const res = await fetch(`${API_URL}/api/resenas/curso/${cursoId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -240,7 +241,7 @@ export default function ModulosCurso() {
     });
 
     if (confirm.isConfirmed && reseñaGuardada) {
-      const res = await fetch(`http://localhost:8080/api/reseñas/${reseñaGuardada.id}`, {
+      const res = await fetch(`${API_URL}/api/reseñas/${reseñaGuardada.id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -260,7 +261,7 @@ export default function ModulosCurso() {
       Swal.fire("Error", "ID de curso no válido", "error");
       return;
     }
-    const response = await fetch(`http://localhost:8080/api/modulos`, {
+    const response = await fetch(`${API_URL}/api/modulos`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -284,7 +285,7 @@ export default function ModulosCurso() {
   };
 
   const handleNuevoContenido = async () => {
-    const response = await fetch(`http://localhost:8080/api/contenidos`, {
+    const response = await fetch(`${API_URL}/api/contenidos`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -317,7 +318,7 @@ export default function ModulosCurso() {
     });
 
     if (confirm.isConfirmed) {
-      const res = await fetch(`http://localhost:8080/api/modulos/${moduloId}`, {
+      const res = await fetch(`${API_URL}/api/modulos/${moduloId}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -338,7 +339,7 @@ export default function ModulosCurso() {
 
     if (confirm.isConfirmed) {
       const res = await fetch(
-        `http://localhost:8080/api/contenidos/${contenidoId}`,
+        `${API_URL}/api/contenidos/${contenidoId}`,
         {
           method: "DELETE",
           headers: { Authorization: `Bearer ${token}` },
@@ -363,7 +364,7 @@ export default function ModulosCurso() {
 
   const handleActualizarModulo = async () => {
     const response = await fetch(
-      `http://localhost:8080/api/modulos/${moduloIdEditando}`,
+      `${API_URL}/api/modulos/${moduloIdEditando}`,
       {
         method: "PUT",
         headers: {
@@ -404,7 +405,7 @@ export default function ModulosCurso() {
 
   const handleActualizarContenido = async () => {
     const response = await fetch(
-      `http://localhost:8080/api/contenidos/${contenidoIdEditando}`,
+      `${API_URL}/api/contenidos/${contenidoIdEditando}`,
       {
         method: "PUT",
         headers: {
@@ -434,7 +435,7 @@ export default function ModulosCurso() {
   const toggleDisponibilidad = async () => {
     try {
       const res = await fetch(
-        `http://localhost:8080/api/cursos/${cursoId}/disponibilidad?disponible=${!disponibleParaCompra}`,
+        `${API_URL}/api/cursos/${cursoId}/disponibilidad?disponible=${!disponibleParaCompra}`,
         {
           method: "PATCH",
           headers: {
@@ -464,7 +465,7 @@ export default function ModulosCurso() {
       const decoded = jwtDecode(token);
       const usuarioId = decoded.sub;
 
-      const res = await fetch("http://localhost:8080/api/progreso", {
+      const res = await fetch(`${API_URL}/api/progreso`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -476,7 +477,7 @@ export default function ModulosCurso() {
         }),
       });
 
-      console.log("🔐 Headers:", {
+      console.log(" Headers:", {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json"
       });
@@ -489,12 +490,12 @@ export default function ModulosCurso() {
           return prev;
         });
       } else {
-        console.error("❌ No se pudo registrar el progreso");
+        console.error(" No se pudo registrar el progreso");
       }
       const texto = await res.text();
       console.log("Respuesta del backend:", texto);
     } catch (error) {
-      console.error("❌ Error al marcar contenido como visto:", error);
+      console.error(" Error al marcar contenido como visto:", error);
     }
   };
 
@@ -510,7 +511,7 @@ export default function ModulosCurso() {
       const usuarioId = decoded.sub;
 
       const res = await fetch(
-        `http://localhost:8080/api/progreso/usuario/${usuarioId}`,
+        `${API_URL}/api/progreso/usuario/${usuarioId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -523,16 +524,16 @@ export default function ModulosCurso() {
         const vistos = data.map((prog) => prog.contenidoId);
         setContenidosVistos(vistos);
       } else {
-        console.error("❌ No se pudo obtener el progreso");
+        console.error(" No se pudo obtener el progreso");
       }
     } catch (error) {
-      console.error("❌ Error al obtener progreso del usuario:", error);
+      console.error(" Error al obtener progreso del usuario:", error);
     }
   };
 
   const obtenerCursoConProgreso = async (cursoId) => {
     try {
-      const res = await fetch(`http://localhost:8080/api/certificados/curso/${cursoId}`, {
+      const res = await fetch(`${API_URL}/api/certificados/curso/${cursoId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -540,33 +541,33 @@ export default function ModulosCurso() {
 
       if (res.ok) {
         const data = await res.json();
-        setCurso(data); // ← Asegúrate de tener useState para curso
+        setCurso(data); 
       } else {
-        console.error("❌ No se pudo obtener el curso con progreso");
+        console.error("  No se pudo obtener el curso con progreso");
       }
     } catch (err) {
-      console.error("❌ Error al obtener curso con progreso:", err);
+      console.error(" Error al obtener curso con progreso:", err);
     }
   };
 
 
-  console.log("🧪 Llamando a API con cursoId:", cursoId, "y usuarioId:", usuarioId);
+  console.log(" Llamando a API con cursoId:", cursoId, "y usuarioId:", usuarioId);
 
   useEffect(() => {
     const obtenerAvanceCurso = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8080/api/progreso/curso/${cursoId}/usuario/${usuarioId}`, {
+          `${API_URL}/api/progreso/curso/${cursoId}/usuario/${usuarioId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
         );
         const data = await response.json();
-        console.log("✅ Avance del curso:", data); // 👈 ESTE IMPRIME EL OBJETO COMPLETO QUE LLEGA DEL BACK
+        console.log(" Avance del curso:", data); 
         setAvanceCurso(data); // Guarda el avance en el estado
       } catch (error) {
-        console.error("❌ Error al obtener avance del curso:", error);
+        console.error(" Error al obtener avance del curso:", error);
       }
     };
 
@@ -577,7 +578,7 @@ export default function ModulosCurso() {
 
   useEffect(() => {
     if (usuarioId && cursoId) {
-      fetch(`http://localhost:8080/api/progreso/curso/${cursoId}/usuario/${usuarioId}`, {
+      fetch(`${API_URL}/api/progreso/curso/${cursoId}/usuario/${usuarioId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -589,11 +590,11 @@ export default function ModulosCurso() {
           return res.json();
         })
         .then((data) => {
-          console.log("✅ Avance del curso:", data);
+          console.log(" Avance del curso:", data);
           setAvanceCurso(data);
         })
         .catch((error) => {
-          console.error("❌ Error al obtener avance:", error.message);
+          console.error(" Error al obtener avance:", error.message);
         });
     }
   }, [usuarioId, cursoId]);
@@ -604,8 +605,8 @@ export default function ModulosCurso() {
 
 
   useEffect(() => {
-    console.log("✅ Avance del curso:", avanceCurso);
-    console.log("🎯 Tipo de avance:", typeof avanceCurso?.porcentajeAvance);
+    console.log(" Avance del curso:", avanceCurso);
+    console.log(" Tipo de avance:", typeof avanceCurso?.porcentajeAvance);
   }, [avanceCurso]);
 
 
@@ -637,7 +638,7 @@ export default function ModulosCurso() {
               variant="light"
               onClick={() =>
                 window.open(
-                  `http://localhost:8080/api/certificados/generar?cursoId=${curso.id}&usuarioId=${usuarioId}`,
+                  `${API_URL}/api/certificados/generar?cursoId=${curso.id}&usuarioId=${usuarioId}`,
                   "_blank"
                 )
               }
