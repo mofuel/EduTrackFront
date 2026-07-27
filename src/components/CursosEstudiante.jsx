@@ -129,7 +129,7 @@ export default function CursosEstudiante() {
                         <Button
                           variant="primary"
                           className="btn-ver-curso w-100"
-                          onClick={() => window.location.href = `/modulos-curso/${curso.id}`}
+                          onClick={() => window.location.href = `/modulos-curso/${curso.cursoId}`}
                         >
                           Ir al Curso
                         </Button>
